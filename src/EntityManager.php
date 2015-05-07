@@ -55,7 +55,7 @@ class EntityManager
 
         $data = $this->client->get("/$type", array_filter($query));
 
-        return new EntityList($type, $data->objects, $this);
+        return new EntityList($type, $data['objects'], $this);
     }
 
     /**

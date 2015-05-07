@@ -33,7 +33,8 @@ class Client implements ClientInterface
      */
     public function get($url, $query = [])
     {
-        return $this->client->get(ltrim($url, '/'), ['query' => $query]);
+            $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);
+            return $response->json();
     }
 
     /**

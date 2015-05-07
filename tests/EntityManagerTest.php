@@ -10,7 +10,20 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
 {
     public function testFindAllMembers()
     {
-        $this->markTestIncomplete();
+        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $manager = new EntityManager($client, new EntityFactory());
+
+        $client
+            ->expects($this->once())
+            ->method('get')
+            ->with('/member')
+            ->willReturn(['objects' => [1,2,3]])
+        ;
+
+        $members = $manager->findAll('member');
+
+        $this->assertInstanceOf('Terminal42\\WeblingApi\\EntityList', $members);
+        $this->assertEquals([1, 2, 3], $members->getIds());
     }
 
     public function testFindMember()
@@ -23,13 +36,13 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('get')
             ->with('/member/111')
-            ->willReturn('{}')
+            ->willReturn(['type' => 'member'])
         ;
 
         $factory
             ->expects($this->once())
             ->method('create')
-            ->with($manager, '{}')
+            ->with($manager, ['type' => 'member'])
         ;
 
         $manager->find('member', 111);

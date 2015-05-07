@@ -16,7 +16,7 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(EntityManager $manager, $data, $id = null)
+    public function create(EntityManager $manager, array $data, $id = null)
     {
         $class = $this->classes[$data['type']];
 
