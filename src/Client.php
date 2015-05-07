@@ -18,7 +18,7 @@ class Client implements ClientInterface
         $this->client = new \GuzzleHttp\Client(
             [
                 'base_url' => [
-                    'https://{subdomain}.webling.ch/api/{version}',
+                    'https://{subdomain}.webling.ch/api/{version}/',
                     ['subdomain' => $subdomain, 'version' => $apiVersion]
                 ],
                 'defaults' => [
@@ -33,7 +33,7 @@ class Client implements ClientInterface
      */
     public function get($url, $query = [])
     {
-        return $this->client->get($url, ['query' => $query]);
+        return $this->client->get(ltrim($url, '/'), ['query' => $query]);
     }
 
     /**
@@ -41,7 +41,7 @@ class Client implements ClientInterface
      */
     public function post($url, $json)
     {
-        return $this->client->post($url, ['json' => $json]);
+        return $this->client->post(ltrim($url, '/'), ['json' => $json]);
     }
 
     /**
@@ -49,7 +49,7 @@ class Client implements ClientInterface
      */
     public function put($url, $json)
     {
-        return $this->client->put($url, ['json' => $json]);
+        return $this->client->put(ltrim($url, '/'), ['json' => $json]);
     }
 
     /**
@@ -57,6 +57,6 @@ class Client implements ClientInterface
      */
     public function delete($url)
     {
-        return $this->client->delete($url);
+        return $this->client->delete(ltrim($url, '/'));
     }
 }
