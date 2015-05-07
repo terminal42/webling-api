@@ -17,7 +17,7 @@ abstract class AbstractEntity implements EntityInterface
         $id = null,
         $readonly = false,
         array $properties = [],
-        EntityList $children = null,
+        array $children = [],
         EntityList $parents = null,
         EntityList $links = null
     ) {

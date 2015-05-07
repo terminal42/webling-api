@@ -43,8 +43,12 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('create')
             ->with($manager, ['type' => 'member'])
+            ->willReturn('foo')
         ;
 
+        $manager->find('member', 111);
+
+        // Tests the manager will not call the client or factory again
         $manager->find('member', 111);
     }
 
