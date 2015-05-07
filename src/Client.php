@@ -2,6 +2,11 @@
 
 namespace Terminal42\WeblingApi;
 
+use GuzzleHttp\Exception\ParseException as GuzzleParseException;
+use GuzzleHttp\Exception\RequestException;
+use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\ParseException;
+
 class Client implements ClientInterface
 {
     protected $client;
@@ -33,8 +38,15 @@ class Client implements ClientInterface
      */
     public function get($url, $query = [])
     {
+        try {
             $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);
             return $response->json();
+
+        } catch (RequestException $e) {
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        } catch (GuzzleParseException $e) {
+            throw new ParseException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -42,7 +54,11 @@ class Client implements ClientInterface
      */
     public function post($url, $json)
     {
-        return $this->client->post(ltrim($url, '/'), ['json' => $json]);
+        try {
+            return $this->client->post(ltrim($url, '/'), ['json' => $json]);
+        } catch (RequestException $e) {
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -50,7 +66,11 @@ class Client implements ClientInterface
      */
     public function put($url, $json)
     {
-        return $this->client->put(ltrim($url, '/'), ['json' => $json]);
+        try {
+            return $this->client->put(ltrim($url, '/'), ['json' => $json]);
+        } catch (RequestException $e) {
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -58,6 +78,10 @@ class Client implements ClientInterface
      */
     public function delete($url)
     {
-        return $this->client->delete(ltrim($url, '/'));
+        try {
+            return $this->client->delete(ltrim($url, '/'));
+        } catch (RequestException $e) {
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 }

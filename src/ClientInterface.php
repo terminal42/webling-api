@@ -2,6 +2,9 @@
 
 namespace Terminal42\WeblingApi;
 
+use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\ParseException;
+
 interface ClientInterface
 {
     /**
@@ -10,7 +13,10 @@ interface ClientInterface
      * @param string $url  The URL to send request to
      * @param array $query An optional array of GET parameters
      *
-     * @return mixed
+     * @return array
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function get($url, $query = []);
 
@@ -21,6 +27,8 @@ interface ClientInterface
      * @param string $json The JSON data
      *
      * @return mixed
+     *
+     * @throws HttpStatusException If there was a problem with the request
      */
     public function post($url, $json);
 
@@ -31,6 +39,8 @@ interface ClientInterface
      * @param string $json The JSON data
      *
      * @return mixed
+     *
+     * @throws HttpStatusException If there was a problem with the request
      */
     public function put($url, $json);
 
@@ -40,6 +50,8 @@ interface ClientInterface
      * @param string $url The URL to send request to
      *
      * @return mixed
+     *
+     * @throws HttpStatusException If there was a problem with the request
      */
     public function delete($url);
 }
