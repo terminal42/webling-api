@@ -4,7 +4,7 @@ namespace Terminal42\WeblingApi;
 
 class Client implements ClientInterface
 {
-    private $client;
+    protected $client;
 
     /**
      * Constructor.

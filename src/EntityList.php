@@ -6,10 +6,28 @@ use Terminal42\WeblingApi\Entity\EntityInterface;
 
 class EntityList implements \Iterator, \Countable
 {
+    /**
+     * @var string
+     */
     private $type;
+
+    /**
+     * @var array
+     */
     private $ids;
+
+    /**
+     * @var EntityManager
+     */
     private $manager;
 
+    /**
+     * Constructor.
+     *
+     * @param string        $type    The entity type
+     * @param array         $ids     An array of entity IDs
+     * @param EntityManager $manager An entity manager to fetch entities
+     */
     public function __construct($type, array $ids, EntityManager $manager)
     {
         $this->type    = $type;
@@ -64,7 +82,6 @@ class EntityList implements \Iterator, \Countable
     {
         return count($this->ids);
     }
-
 
     /**
      * Gets all IDs of the entity list.
