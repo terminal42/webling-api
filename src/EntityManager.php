@@ -171,13 +171,13 @@ class EntityManager
     /**
      * Creates a new entity manager for the given Webling account.
      *
-     * @param string $domain Your Webling subdomain.
-     * @param string $apiKey Your Webling API key.
+     * @param string $subdomain Your Webling subdomain.
+     * @param string $apiKey    Your Webling API key.
      *
      * @return static
      */
-    public static function createForAccount($domain, $apiKey)
+    public static function createForAccount($subdomain, $apiKey)
     {
-        return new static(new Client($domain, static::API_VERSION, $apiKey), new EntityFactory());
+        return new static(new Client($subdomain, $apiKey, static::API_VERSION), new EntityFactory());
     }
 }

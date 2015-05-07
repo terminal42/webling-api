@@ -4,12 +4,59 @@ namespace Terminal42\WeblingApi;
 
 class Client implements ClientInterface
 {
-    private $baseUrl;
-    private $apiKey;
+    private $client;
 
-    public function __construct($domain, $apiVersion, $apiKey)
+    /**
+     * Constructor.
+     *
+     * @param string $subdomain  Your Webling subdomain.
+     * @param string $apiKey     Your Webling API key.
+     * @param int    $apiVersion The API version
+     */
+    public function __construct($subdomain, $apiKey, $apiVersion)
     {
-        $this->baseUrl = sprintf('https://%s.webling.ch/api/%d', $domain, $apiVersion);
-        $this->apiKey  = $apiKey;
+        $this->client = new \GuzzleHttp\Client(
+            [
+                'base_url' => [
+                    'https://{subdomain}.webling.ch/api/{version}',
+                    ['subdomain' => $subdomain, 'version' => $apiVersion]
+                ],
+                'defaults' => [
+                    'query' => ['apikey' => $apiKey]
+                ]
+            ]
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($url, $query = [])
+    {
+        return $this->client->get($url, ['query' => $query]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function post($url, $json)
+    {
+        return $this->client->post($url, ['json' => $json]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function put($url, $json)
+    {
+        return $this->client->put($url, ['json' => $json]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($url)
+    {
+        return $this->client->delete($url);
     }
 }
