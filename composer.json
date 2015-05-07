@@ -1,0 +1,24 @@
+{
+    "name": "terminal42/webling-api",
+    "type": "library",
+    "description": "API client for webling.ch",
+    "minimum-stability": "stable",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "terminal42 gmbh",
+            "homepage": "https://www.terminal42.ch/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Terminal42\\WeblingApi\\": "src"
+        }
+    }
+}
