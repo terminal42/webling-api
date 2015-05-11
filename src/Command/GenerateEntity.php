@@ -127,7 +127,7 @@ PHP;
         $buffer = <<<PHP
 <?php
 
-namespace $namespace;
+namespace $namespace\\Entity;
 
 use Terminal42\\WeblingApi\\Entity\\ConfigAwareInterface;
 use Terminal42\\WeblingApi\\Entity\\GeneratorTrait;
@@ -141,7 +141,7 @@ PHP;
         foreach ($properties as $name => $property) {
             $id     = $property['id'];
             $method = $this->normalizeProperty($name);
-            $hint   = $this->getTypehint($name, $property['datatype']);
+            $hint   = $this->getTypehint($property['datatype'], $name, $namespace);
 
             if ('enum' === $property['datatype']) {
                 $this->generateEnum($namespace, $method, $path, $property);
@@ -177,17 +177,18 @@ PHP;
 
         $buffer .= "}\n";
 
-        $this->filesystem->dumpFile($path . DIRECTORY_SEPARATOR . $className . '.php', $buffer);
+        $this->filesystem->dumpFile(
+            $path . DIRECTORY_SEPARATOR . 'Entity' . DIRECTORY_SEPARATOR . $className . '.php',
+            $buffer
+        );
     }
 
-    private function generateEnum($namespace, $class, $path, array $property)
+    private function generateEnum($namespace, $className, $path, array $property)
     {
-        $className = $class . 'Enum';
-
         $buffer = <<<PHP
 <?php
 
-namespace $namespace;
+namespace $namespace\\Property;
 
 class $className extends \SplEnum
 {
@@ -195,7 +196,7 @@ class $className extends \SplEnum
 PHP;
 
         foreach ($property['values'] as $value) {
-            $name = $this->normalizeConstant($class, $value);
+            $name = $this->normalizeConstant($className, $value);
 
             $buffer .= <<<PHP
     const $name = '$value';
@@ -205,7 +206,10 @@ PHP;
 
         $buffer .= "}\n";
 
-        $this->filesystem->dumpFile($path . DIRECTORY_SEPARATOR . $className . '.php', $buffer);
+        $this->filesystem->dumpFile(
+            $path . DIRECTORY_SEPARATOR . 'Property' . DIRECTORY_SEPARATOR . $className . '.php',
+            $buffer
+        );
     }
 
     private function normalizeProperty($name)
@@ -229,7 +233,7 @@ PHP;
         return strtoupper($value);
     }
 
-    private function getTypehint($name, $datatype)
+    private function getTypehint($datatype, $name, $namespace)
     {
         switch ($datatype) {
             case 'autoincrement':
@@ -243,7 +247,7 @@ PHP;
                 return 'bool';
 
             case 'enum':
-                return $this->normalizeProperty($name) . 'Enum';
+                return $namespace . '\\Property\\' . $this->normalizeProperty($name);
 
             case 'file':
                 return '\\Terminal42\\WeblingApi\\Property\\File';
