@@ -2,6 +2,7 @@
 
 namespace Terminal42\WeblingApi;
 
+use Terminal42\WeblingApi\Entity\ConfigAwareInterface;
 use Terminal42\WeblingApi\Entity\EntityInterface;
 
 class EntityFactory implements EntityFactoryInterface
@@ -27,7 +28,7 @@ class EntityFactory implements EntityFactoryInterface
             $children[$type] = new EntityList($type, $ids, $manager);
         }
 
-        return new $class(
+        $entity = new $class(
             $id,
             $data['readyonly'],
             $data['properties'],
@@ -35,6 +36,13 @@ class EntityFactory implements EntityFactoryInterface
             new EntityList($data['type'], $data['parents'], $manager),
             new EntityList($data['type'], $data['links'], $manager)
         );
+
+        if ($entity instanceof ConfigAwareInterface) {
+            $config = $manager->getConfig();
+            $entity->setConfig($config[$data['type']]);
+        }
+
+        return $entity;
     }
 
     /**

@@ -36,6 +36,23 @@ class EntityManager
     }
 
     /**
+     * Returns the configuration of entities and other account information.
+     * ATTENTION: This call is currently undocumented and could be removed in any update to the API.
+     *
+     * @internal
+     */
+    public function getConfig()
+    {
+        static $config;
+
+        if (null === $config) {
+            $config = $this->client->get('/config');
+        }
+
+        return $config;
+    }
+
+    /**
      * Gets the factory instance used by this entity manager.
      *
      * @return EntityFactoryInterface
