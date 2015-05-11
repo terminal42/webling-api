@@ -106,11 +106,11 @@ class GenerateEntity extends ManagerAwareCommand
 
 namespace $namespace;
 
-use \\Terminal42\\WeblingApi\\EntityFactory as BaseFactory;
+use Terminal42\\WeblingApi\\EntityFactory as BaseFactory;
 
 class EntityFactory extends BaseFactory
 {
-    protected \$entites = $classes;
+    protected \$classes = $classes;
 
 PHP;
 
