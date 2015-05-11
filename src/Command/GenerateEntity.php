@@ -51,10 +51,10 @@ class GenerateEntity extends ManagerAwareCommand
         $namespace = $this->getNamespace($input, $output);
 
         foreach ($this->getSupportedTypes($config) as $entity) {
-            $class            = $namespace . '\\Entity\\' . ucfirst($entity);
+            $class            = ucfirst($entity);
             $classes[$entity] = $class;
 
-            $this->generateEntity($class, $input->getArgument('directory'), $config[$entity]['properties']);
+            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $config[$entity]['properties']);
         }
 
         $this->generateFactory($namespace, $classes, $input->getArgument('directory'));
@@ -119,15 +119,12 @@ PHP;
         $this->filesystem->dumpFile($path . DIRECTORY_SEPARATOR . 'EntityFactory.php', $buffer);
     }
 
-    private function generateEntity($class, $path, array $properties)
+    private function generateEntity($namespace, $className, $path, array $properties)
     {
-        $namespace = substr($class, 0, strrpos($class, '\\'));
-        $className = substr($class, strrpos($class, '\\')+1);
-
         $buffer = <<<PHP
 <?php
 
-namespace $namespace;
+namespace $namespace\\Entity;
 
 use Terminal42\\WeblingApi\\Entity\\ConfigAwareInterface;
 use Terminal42\\WeblingApi\\Entity\\GeneratorTrait;
