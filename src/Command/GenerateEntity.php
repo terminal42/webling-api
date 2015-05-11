@@ -52,7 +52,7 @@ class GenerateEntity extends ManagerAwareCommand
 
         foreach ($this->getSupportedTypes($config) as $entity) {
             $class            = ucfirst($entity);
-            $classes[$entity] = $class;
+            $classes[$entity] = $namespace . '\\Entity\\' . $class;
 
             $this->generateEntity($namespace, $class, $input->getArgument('directory'), $config[$entity]['properties']);
         }
