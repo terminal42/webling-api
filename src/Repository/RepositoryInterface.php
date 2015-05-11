@@ -23,7 +23,7 @@ interface RepositoryInterface
      * @param string $sort      Sort result by this property
      * @param string $direction Sort order (see constants)
      *
-     * @return EntityList
+     * @return EntityList|EntityInterface[]
      */
     public function findAll($sort = '', $direction = '');
 
@@ -43,7 +43,7 @@ interface RepositoryInterface
      * @param string $sort      Sort result by given property
      * @param string $direction Sort order
      *
-     * @return EntityList
+     * @return EntityList|EntityInterface[]
      */
     public function findBy(array $properties, $sort = '', $direction = '');
 }

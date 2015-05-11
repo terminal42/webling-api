@@ -2,8 +2,13 @@
 
 namespace Terminal42\WeblingApi\Repository;
 
+use Terminal42\WeblingApi\Entity\Member;
 use Terminal42\WeblingApi\EntityList;
 
+/**
+ * @method EntityList|Member[] findAll($sort = '', $direction = '')
+ * @method Member findById($id)
+ */
 class MemberRepository extends AbstractRepository
 {
     /**
@@ -21,7 +26,7 @@ class MemberRepository extends AbstractRepository
      * @param string       $sort      Sort result by this property
      * @param string       $direction Sort order (see RepositoryInterface constants)
      *
-     * @return EntityList
+     * @return EntityList|Member[]
      */
     public function findByFirstnameOrLastname($value, $sort = '', $direction = '')
     {
@@ -34,6 +39,8 @@ class MemberRepository extends AbstractRepository
 
     /**
      * {@inheritdoc}
+     *
+     * @return EntityList|Member[]
      */
     public function findBy(array $properties, $sort = '', $direction = '')
     {
