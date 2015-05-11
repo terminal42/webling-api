@@ -121,8 +121,8 @@ PHP;
 
     private function generateEntity($class, $path, array $properties)
     {
-        $namespace = dirname(str_replace('\\', '/', $class));
-        $className = basename(str_replace('\\', '/', $class));
+        $namespace = substr($class, 0, strrpos($class, '\\'));
+        $className = substr($class, strrpos($class, '\\')+1);
 
         $buffer = <<<PHP
 <?php
