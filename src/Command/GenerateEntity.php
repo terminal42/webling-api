@@ -51,7 +51,7 @@ class GenerateEntity extends ManagerAwareCommand
         $namespace = $this->getNamespace($input, $output);
 
         foreach ($this->getSupportedTypes($config) as $entity) {
-            $class            = $namespace . '\\' . ucfirst($entity);
+            $class            = $namespace . '\\Entity\\' . ucfirst($entity);
             $classes[$entity] = $class;
 
             $this->generateEntity($class, $input->getArgument('directory'), $config[$entity]['properties']);
@@ -247,7 +247,7 @@ PHP;
                 return 'bool';
 
             case 'enum':
-                return $namespace . '\\Property\\' . $this->normalizeProperty($name);
+                return '\\' . $namespace . '\\Property\\' . $this->normalizeProperty($name);
 
             case 'file':
                 return '\\Terminal42\\WeblingApi\\Property\\File';
