@@ -11,8 +11,8 @@ class EntityFactory implements EntityFactoryInterface
      * @var EntityInterface[]
      */
     protected $classes = [
-        'member'      => 'Terminal42\WeblingApi\Entity\Member',
-        'membergroup' => 'Terminal42\WeblingApi\Entity\Membergroup',
+        'member'      => 'Terminal42\\WeblingApi\\Entity\\Member',
+        'membergroup' => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
     ];
 
     /**
