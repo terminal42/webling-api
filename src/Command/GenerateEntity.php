@@ -127,7 +127,7 @@ PHP;
         $buffer = <<<PHP
 <?php
 
-namespace $namespace\\Entity;
+namespace $namespace;
 
 use Terminal42\\WeblingApi\\Entity\\ConfigAwareInterface;
 use Terminal42\\WeblingApi\\Entity\\GeneratorTrait;
