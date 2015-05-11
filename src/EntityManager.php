@@ -36,6 +36,16 @@ class EntityManager
     }
 
     /**
+     * Gets the factory instance used by this entity manager.
+     *
+     * @return EntityFactoryInterface
+     */
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    /**
      * Finds all entities for a given type.
      *
      * @param string $type      The entity type
