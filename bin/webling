@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Filesystem\Filesystem;
+use Terminal42\WeblingApi\Command\GenerateEntity;
+
+set_time_limit(0);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$application = new Application('Webling API Helper', '1.0.0-dev');
+$application->add(new GenerateEntity(new Filesystem()));
+$application->run();
