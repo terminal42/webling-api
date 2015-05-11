@@ -27,7 +27,7 @@ class GenerateEntity extends ManagerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('generateEntity')
+            ->setName('generate')
             ->setDescription('Generate entities for your Webling configuration.')
             ->addArgument(
                 'directory',
@@ -47,14 +47,17 @@ class GenerateEntity extends ManagerAwareCommand
             return;
         }
 
+        $classes   = [];
         $namespace = $this->getNamespace($input, $output);
 
-
-
         foreach ($this->getSupportedTypes($config) as $entity) {
-            $class = $namespace . '\\' . ucfirst($entity);
+            $class            = $namespace . '\\' . ucfirst($entity);
+            $classes[$entity] = $class;
+
             $this->generateEntity($class, $input->getArgument('directory'), $config[$entity]['properties']);
         }
+
+        $this->generateFactory($namespace, $classes, $input->getArgument('directory'));
     }
 
     private function getNamespace(InputInterface $input, OutputInterface $output)
@@ -94,6 +97,27 @@ class GenerateEntity extends ManagerAwareCommand
         return $entities;
     }
 
+    private function generateFactory($namespace, array $classes, $path)
+    {
+        $classes = var_export($classes, true);
+
+        $buffer = <<<PHP
+<?php
+
+namespace $namespace;
+
+use \\Terminal42\\WeblingApi\\EntityFactory as BaseFactory;
+
+class EntityFactory extends BaseFactory
+{
+    protected \$entites = $classes;
+
+PHP;
+
+        $buffer .= "}\n";
+
+        $this->filesystem->dumpFile($path . DIRECTORY_SEPARATOR . 'EntityFactory.php', $buffer);
+    }
 
     private function generateEntity($class, $path, array $properties)
     {
