@@ -187,7 +187,7 @@ PHP;
 
 namespace $namespace\\Property;
 
-class $className extends \SplEnum
+class $className extends \\Terminal42\\WeblingApi\\Property\\Enum
 {
 
 PHP;
