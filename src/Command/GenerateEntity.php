@@ -187,7 +187,9 @@ PHP;
 
 namespace $namespace\\Property;
 
-class $className extends \\Terminal42\\WeblingApi\\Property\\Enum
+use Terminal42\\WeblingApi\\Property\\Enum;
+
+class $className extends Enum
 {
 
 PHP;
