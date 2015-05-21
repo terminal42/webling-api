@@ -55,7 +55,7 @@ class Client implements ClientInterface
     public function post($url, $json)
     {
         try {
-            return $this->client->post(ltrim($url, '/'), ['json' => $json]);
+            return $this->client->post(ltrim($url, '/'), ['body' => $json]);
         } catch (RequestException $e) {
             throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
@@ -67,7 +67,7 @@ class Client implements ClientInterface
     public function put($url, $json)
     {
         try {
-            return $this->client->put(ltrim($url, '/'), ['json' => $json]);
+            return $this->client->put(ltrim($url, '/'), ['body' => $json]);
         } catch (RequestException $e) {
             throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
