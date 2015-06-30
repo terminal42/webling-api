@@ -5,6 +5,7 @@ namespace Terminal42\WeblingApi;
 use GuzzleHttp\Exception\ParseException as GuzzleParseException;
 use GuzzleHttp\Exception\RequestException;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\NotFoundException;
 use Terminal42\WeblingApi\Exception\ParseException;
 
 class Client implements ClientInterface
@@ -42,10 +43,8 @@ class Client implements ClientInterface
             $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);
             return $response->json();
 
-        } catch (RequestException $e) {
-            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
-        } catch (GuzzleParseException $e) {
-            throw new ParseException($e->getMessage(), $e->getCode(), $e);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
     }
 
@@ -56,8 +55,8 @@ class Client implements ClientInterface
     {
         try {
             return $this->client->post(ltrim($url, '/'), ['body' => $json]);
-        } catch (RequestException $e) {
-            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
     }
 
@@ -68,8 +67,8 @@ class Client implements ClientInterface
     {
         try {
             return $this->client->put(ltrim($url, '/'), ['body' => $json]);
-        } catch (RequestException $e) {
-            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
     }
 
@@ -80,8 +79,32 @@ class Client implements ClientInterface
     {
         try {
             return $this->client->delete(ltrim($url, '/'));
-        } catch (RequestException $e) {
-            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
+    }
+
+    /**
+     * Convert known Guzzle exceptions to our custom ones
+     *
+     * @param \Exception $e
+     *
+     * @return \Exception
+     */
+    private function convertException(\Exception $e)
+    {
+        if ($e instanceof RequestException) {
+            if (404 === $e->getResponse()->getStatusCode()) {
+                return new NotFoundException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            return new HttpStatusException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        if ($e instanceof GuzzleParseException) {
+            return new ParseException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return $e;
     }
 }
