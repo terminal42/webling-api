@@ -66,7 +66,9 @@ class GenerateEntity extends ManagerAwareCommand
         $helper = $this->getHelper('question');
 
         $folders = [];
-        foreach (array_reverse(explode(DIRECTORY_SEPARATOR, $input->getArgument('directory'))) as $folder) {
+        $dir     = rtrim($input->getArgument('directory'), DIRECTORY_SEPARATOR);
+
+        foreach (array_reverse(explode(DIRECTORY_SEPARATOR, $dir)) as $folder) {
             if (!preg_match('/^[A-Z][A-Za-z0-9]*$/', $folder)) {
                 break;
             }
