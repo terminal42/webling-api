@@ -10,7 +10,7 @@ get in touch with us.
 ## Installation
 
 ```bash
-composer require terminal42/webling-api dev-develop
+$ composer.phar require terminal42/webling-api dev-develop
 ```
 
 ## Usage
