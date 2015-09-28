@@ -94,7 +94,10 @@ class Client implements ClientInterface
     private function convertException(\Exception $e)
     {
         if ($e instanceof RequestException) {
-            if (404 === $e->getResponse()->getStatusCode()) {
+
+            if (null !== $e->getResponse()
+                && 404 === $e->getResponse()->getStatusCode()
+            ) {
                 return new NotFoundException($e->getMessage(), $e->getCode(), $e);
             }
 
