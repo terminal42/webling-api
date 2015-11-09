@@ -144,6 +144,8 @@ PHP;
 
             if ('enum' === $property['datatype']) {
                 $this->generateEnum($namespace, $method, $path, $property);
+            } elseif ('multienum' === $property['datatype']) {
+                $this->generateEnum($namespace, $method, $path, $property);
             }
 
             $buffer .= <<<PHP
@@ -182,8 +184,9 @@ PHP;
         );
     }
 
-    private function generateEnum($namespace, $className, $path, array $property)
+    private function generateEnum($namespace, $className, $path, array $property, $multi = false)
     {
+        $parent = $multi ? 'Multienum' : 'Enum';
         $buffer = <<<PHP
 <?php
 
@@ -191,7 +194,7 @@ namespace $namespace\\Property;
 
 use Terminal42\\WeblingApi\\Property\\Enum;
 
-class $className extends Enum
+class $className extends $parent
 {
 
 PHP;
@@ -248,6 +251,9 @@ PHP;
                 return 'bool';
 
             case 'enum':
+                return '\\' . $namespace . '\\Property\\' . $this->normalizeProperty($name);
+
+            case 'multienum':
                 return '\\' . $namespace . '\\Property\\' . $this->normalizeProperty($name);
 
             case 'file':
