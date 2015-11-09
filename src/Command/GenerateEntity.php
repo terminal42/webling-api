@@ -192,7 +192,7 @@ PHP;
 
 namespace $namespace\\Property;
 
-use Terminal42\\WeblingApi\\Property\\Enum;
+use Terminal42\\WeblingApi\\Property\\$parent;
 
 class $className extends $parent
 {
@@ -227,7 +227,7 @@ PHP;
 
     private function normalizeConstant($property, $value)
     {
-        $value = str_replace(['ä', 'ö', 'ü'], ['ae', 'oe', 'ue'], strtolower($value));
+        $value = str_replace(['ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü'], ['ae', 'AE', 'oe', 'OE', 'ue', 'UE'], $value);
         $value = preg_replace('/[^a-z0-9]/i', '_', $value);
         $value = trim(str_replace('__', '_', $value), '_');
 
