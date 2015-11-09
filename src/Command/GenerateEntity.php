@@ -227,6 +227,7 @@ PHP;
 
     private function normalizeConstant($property, $value)
     {
+        $value = str_replace(['ä', 'ö', 'ü'], ['ae', 'oe', 'ue'], strtolower($value));
         $value = preg_replace('/[^a-z0-9]/i', '_', $value);
         $value = trim(str_replace('__', '_', $value), '_');
 
