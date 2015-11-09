@@ -145,7 +145,7 @@ PHP;
             if ('enum' === $property['datatype']) {
                 $this->generateEnum($namespace, $method, $path, $property);
             } elseif ('multienum' === $property['datatype']) {
-                $this->generateEnum($namespace, $method, $path, $property);
+                $this->generateEnum($namespace, $method, $path, $property, true);
             }
 
             $buffer .= <<<PHP
