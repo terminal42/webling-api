@@ -57,10 +57,10 @@ trait GeneratorTrait
                 );
 
             case 'date':
-                return new Date($value);
+                return null === $value ? null : new Date($value);
 
             case 'timestamp':
-                return new Timestamp($value);
+                return null === $value ? null : new Timestamp($value);
 
             default:
                 throw new \InvalidArgumentException(sprintf('Type "%s" is not supported.', $datatype));

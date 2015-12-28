@@ -11,7 +11,7 @@ class Date extends \DateTime
      */
     function __construct($value)
     {
-        parent::__construct($value);
+        parent::__construct($value . ' 0:00:00');
     }
 
     /**

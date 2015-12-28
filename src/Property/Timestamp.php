@@ -11,7 +11,7 @@ class Timestamp extends \DateTime
      */
     function __construct($value)
     {
-        parent::__construct($value);
+        parent::__construct($value . ':00');
     }
 
     /**
