@@ -4,10 +4,12 @@ namespace Terminal42\WeblingApi\Repository;
 
 use Terminal42\WeblingApi\Entity\Member;
 use Terminal42\WeblingApi\EntityList;
+use Terminal42\WeblingApi\Query\Query;
 
 /**
  * @method EntityList|Member[] findAll($sort = '', $direction = '')
- * @method Member findById($id)
+ * @method Member              findById($id)
+ * @method EntityList|Member[] findBy(Query $query = null, $sort = '', $direction = '')
  */
 class MemberRepository extends AbstractRepository
 {
@@ -17,49 +19,5 @@ class MemberRepository extends AbstractRepository
     public function getType()
     {
         return 'member';
-    }
-
-    /**
-     * Find member containing given first or lastname.
-     *
-     * @param string|array $value     A value or multiple values to filter for
-     * @param string       $sort      Sort result by this property
-     * @param string       $direction Sort order (see RepositoryInterface constants)
-     *
-     * @return EntityList|Member[]
-     */
-    public function findByFirstnameOrLastname($value, $sort = '', $direction = '')
-    {
-        if (is_array($value)) {
-            $value = implode(' ', $value);
-        }
-
-        return $this->manager->findAll($this->getType(), $value, $sort, $direction);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return EntityList|Member[]
-     */
-    public function findBy(array $properties, $sort = '', $direction = '')
-    {
-        $filter = [];
-
-        if (isset($properties['Vorname'])) {
-            $filter[] = $properties['Vorname'];
-            unset($properties['Vorname']);
-        }
-
-        if (isset($properties['Name'])) {
-            $filter[] = $properties['Name'];
-            unset($properties['Name']);
-        }
-
-        $filter = empty($filter) ? '' : implode(' ', $filter);
-
-        $entities = $this->manager->findAll($this->getType(), $filter, $sort, $direction);
-
-        return empty($properties) ? $entities : new PropertyFilter($entities, $properties);
     }
 }

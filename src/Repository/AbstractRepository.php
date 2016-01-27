@@ -3,6 +3,9 @@
 namespace Terminal42\WeblingApi\Repository;
 
 use Terminal42\WeblingApi\EntityManager;
+use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\ParseException;
+use Terminal42\WeblingApi\Query\Query;
 
 abstract class AbstractRepository implements RepositoryInterface
 {
@@ -46,10 +49,8 @@ abstract class AbstractRepository implements RepositoryInterface
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      */
-    public function findBy(array $properties, $sort = '', $direction = '')
+    public function findBy(Query $query = null, $sort = '', $direction = '')
     {
-        $entities = $this->manager->findAll($this->getType(), '', $sort, $direction);
-
-        return new PropertyFilter($entities, $properties);
+        return $this->manager->findAll($this->getType(), $query, $sort, $direction);
     }
 }

@@ -5,6 +5,7 @@ namespace Terminal42\WeblingApi;
 use Terminal42\WeblingApi\Entity\EntityInterface;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
 use Terminal42\WeblingApi\Exception\ParseException;
+use Terminal42\WeblingApi\Query\Query;
 
 class EntityManager
 {
@@ -71,7 +72,7 @@ class EntityManager
      * Finds all entities for a given type.
      *
      * @param string $type      The entity type
-     * @param string $filter    Filter the result by given keyword(s)
+     * @param Query  $query     A property query from the QueryBuilder
      * @param string $sort      Sort the passed property
      * @param string $direction Sort order (see RepositoryInterface constants)
      *
@@ -80,15 +81,15 @@ class EntityManager
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      */
-    public function findAll($type, $filter = '', $sort = '', $direction = '')
+    public function findAll($type, Query $query = null, $sort = '', $direction = '')
     {
-        $query = [
-            'filter'    => $filter,
+        $params = [
+            'query'     => (string) $query,
             'sort'      => $sort,
             'direction' => $direction
         ];
 
-        $data = $this->client->get("/$type", array_filter($query));
+        $data = $this->client->get("/$type", array_filter($params));
 
         return new EntityList($type, $data['objects'], $this);
     }

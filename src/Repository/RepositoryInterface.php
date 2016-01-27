@@ -4,6 +4,7 @@ namespace Terminal42\WeblingApi\Repository;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
 use Terminal42\WeblingApi\EntityList;
+use Terminal42\WeblingApi\Query\Query;
 
 interface RepositoryInterface
 {
@@ -39,11 +40,11 @@ interface RepositoryInterface
     /**
      * Find entities with given properties.
      *
-     * @param array $properties A key-value list of properties and values
+     * @param Query  $query     A property query from the QueryBuilder
      * @param string $sort      Sort result by given property
      * @param string $direction Sort order
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findBy(array $properties, $sort = '', $direction = '');
+    public function findBy(Query $query = null, $sort = '', $direction = '');
 }
