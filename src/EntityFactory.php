@@ -10,9 +10,13 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * @var EntityInterface[]
      */
-    protected $classes = [
-        'member'      => 'Terminal42\\WeblingApi\\Entity\\Member',
-        'membergroup' => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
+    protected static $classes = [
+        'member'        => 'Terminal42\\WeblingApi\\Entity\\Member',
+        'membergroup'   => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
+        'article'       => 'Terminal42\\WeblingApi\\Entity\\Article',
+        'articlegroup'  => 'Terminal42\\WeblingApi\\Entity\\Articlegroup',
+        'document'      => 'Terminal42\\WeblingApi\\Entity\\Document',
+        'documentgroup' => 'Terminal42\\WeblingApi\\Entity\\Documentgroup',
     ];
 
     /**
@@ -20,7 +24,7 @@ class EntityFactory implements EntityFactoryInterface
      */
     public function create(EntityManager $manager, array $data, $id = null)
     {
-        $class = $this->classes[$data['type']];
+        $class = static::$classes[$data['type']];
 
         $children = [];
 
@@ -50,6 +54,6 @@ class EntityFactory implements EntityFactoryInterface
      */
     public function supports($type)
     {
-        return isset($this->classes[$type]);
+        return isset(static::$classes[$type]);
     }
 }

@@ -10,13 +10,12 @@ class EntityFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new EntityFactory();
 
-        $this->assertTrue($factory->supports('member'));
-        $this->assertTrue($factory->supports('membergroup'));
-        $this->assertFalse($factory->supports('foo'));
-    }
-
-    public function testCreate()
-    {
-        $this->markTestIncomplete();
+        static::assertTrue($factory->supports('member'));
+        static::assertTrue($factory->supports('membergroup'));
+        static::assertTrue($factory->supports('article'));
+        static::assertTrue($factory->supports('articlegroup'));
+        static::assertTrue($factory->supports('document'));
+        static::assertTrue($factory->supports('documentgroup'));
+        static::assertFalse($factory->supports('foo'));
     }
 }

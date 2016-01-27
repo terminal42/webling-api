@@ -16,11 +16,17 @@ class Member extends AbstractEntity implements EntityInterface
         return 'member';
     }
 
+    /**
+     * @internal not yet implemented
+     */
     public function getImage($property, $size = self::IMAGE_ORIGINAL)
     {
         // TODO: implement method
     }
 
+    /**
+     * @internal not yet implemented
+     */
     public function getFile($property)
     {
         // TODO: implement method
