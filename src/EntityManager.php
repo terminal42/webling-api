@@ -3,10 +3,12 @@
 namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
+use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\ParseException;
 
 class EntityManager
 {
-    const API_VERSION    = 1;
+    const API_VERSION = 1;
 
     /**
      * @var ClientInterface
@@ -38,6 +40,9 @@ class EntityManager
     /**
      * Returns the configuration of entities and other account information.
      * ATTENTION: This call is currently undocumented and could be removed in any update to the API.
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      *
      * @internal
      */
@@ -71,6 +76,9 @@ class EntityManager
      * @param string $direction Sort order (see RepositoryInterface constants)
      *
      * @return EntityList
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function findAll($type, $filter = '', $sort = '', $direction = '')
     {
@@ -92,6 +100,9 @@ class EntityManager
      * @param int    $id   The entity ID
      *
      * @return mixed
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function find($type, $id)
     {
@@ -111,6 +122,7 @@ class EntityManager
      * @param EntityInterface $entity
      *
      * @throws \InvalidArgumentException If the entity is readonly
+     * @throws HttpStatusException       If there was a problem with the request
      */
     public function persist(EntityInterface $entity)
     {
@@ -134,6 +146,7 @@ class EntityManager
      *
      * @throws \UnexpectedValueException If the entity does not have an ID
      * @throws \InvalidArgumentException If the entity is readonly
+     * @throws HttpStatusException       If there was a problem with the request
      */
     public function remove(EntityInterface $entity)
     {
@@ -156,6 +169,8 @@ class EntityManager
      * Creates an entity in Webling.
      *
      * @param EntityInterface $entity
+     *
+     * @throws HttpStatusException If there was a problem with the request
      */
     private function create(EntityInterface $entity)
     {
@@ -171,6 +186,8 @@ class EntityManager
      * Updates an entity in Webling.
      *
      * @param EntityInterface $entity
+     *
+     * @throws HttpStatusException If there was a problem with the request
      */
     private function update(EntityInterface $entity)
     {

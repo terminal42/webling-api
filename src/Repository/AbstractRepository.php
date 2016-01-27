@@ -8,6 +8,11 @@ abstract class AbstractRepository implements RepositoryInterface
 {
     protected $manager;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $manager
+     */
     public function __construct(EntityManager $manager)
     {
         $this->manager = $manager;
@@ -15,6 +20,9 @@ abstract class AbstractRepository implements RepositoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function findAll($sort = '', $direction = '')
     {
@@ -23,6 +31,9 @@ abstract class AbstractRepository implements RepositoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function findById($id)
     {
@@ -31,6 +42,9 @@ abstract class AbstractRepository implements RepositoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
      */
     public function findBy(array $properties, $sort = '', $direction = '')
     {
