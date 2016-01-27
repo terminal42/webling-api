@@ -51,3 +51,38 @@ foreach ($entityList as $member) {
     // etc.
 }
 ```
+
+
+## The QueryBuilder
+
+The QueryBuilder components allows to find entities using complex search queries.
+It is highly recommended to use an IDE with code autocompletion for easy usage.
+
+
+### Example 1: find member by name ###
+
+```php
+$qb = new QueryBuilder();
+$query = $qb->where('Firstname')->isEqualTo('Max')->andWhere('Lastname')->isEqualTo('Muster')->build();
+```
+
+> Result: `Firstname = "Max" AND Lastname = "Muster"`
+
+
+### Example 2: find member by complex conditions
+
+```php
+$qb = new QueryBuilder();
+
+$query = $qb
+    ->group(
+        $qb->where('Firstname')->isEqualTo('Max')->andWhere('Lastname')->isEqualTo('Muster')
+    )
+    ->orGroup(
+        $qb->where('Firstname')->isEqualTo('Muster')->andWhere('Lastname')->isEqualTo('Max')
+    )
+    ->build()
+;
+```
+
+> Result: '(Firstname = "Max" AND Lastname = "Muster") OR (Lastname = "Max" AND "Firstname" = "Muster")'
