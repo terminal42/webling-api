@@ -17,13 +17,21 @@ class GenerateEntity extends ManagerAwareCommand
      */
     private $filesystem;
 
-    function __construct(Filesystem $filesystem)
+    /**
+     * Constructor.
+     *
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
 
         $this->filesystem = $filesystem;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configure()
     {
         $this
@@ -37,6 +45,9 @@ class GenerateEntity extends ManagerAwareCommand
         ;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
@@ -44,6 +55,10 @@ class GenerateEntity extends ManagerAwareCommand
 
         } catch (HttpStatusException $e) {
             $output->writeln('Could not connect to the Webling API. Check your access details.');
+
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln($e->getMessage());
+            }
             return;
         }
 
