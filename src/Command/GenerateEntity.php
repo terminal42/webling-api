@@ -57,7 +57,7 @@ class GenerateEntity extends ManagerAwareCommand
             $this->generateEntity($namespace, $class, $input->getArgument('directory'), $config[$entity]['properties']);
         }
 
-        $this->generateFactory($namespace, $classes, $input->getArgument('directory'));
+        $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'));
     }
 
     private function getNamespace(InputInterface $input, OutputInterface $output)
@@ -90,7 +90,7 @@ class GenerateEntity extends ManagerAwareCommand
     {
         $entities = [];
 
-        foreach (array_keys($config) as $type) {
+        foreach ($config as $type => $v) {
             if ($this->manager->getFactory()->supports($type)) {
                 $entities[] = $type;
             }
@@ -99,7 +99,7 @@ class GenerateEntity extends ManagerAwareCommand
         return $entities;
     }
 
-    private function generateFactory($namespace, array $classes, $path)
+    private function generateEntityFactory($namespace, array $classes, $path)
     {
         $classes = var_export($classes, true);
 
@@ -132,7 +132,8 @@ use Terminal42\\WeblingApi\\Entity\\ConfigAwareInterface;
 use Terminal42\\WeblingApi\\Entity\\GeneratorTrait;
 use Terminal42\\WeblingApi\\Entity\\$className as BaseEntity;
 
-class $className extends BaseEntity implements ConfigAwareInterface {
+class $className extends BaseEntity implements ConfigAwareInterface
+{
     use GeneratorTrait;
 
 PHP;
