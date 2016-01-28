@@ -7,11 +7,15 @@ If you're interested in moving to a stable release (version 1.0.0) so you can be
 sure there are no BC breaks until version 2.0.0 (semver), please feel free to
 get in touch with us.
 
+
 ## Installation
 
 ```bash
-$ composer.phar require terminal42/webling-api dev-develop
+$ composer.phar require terminal42/webling-api ^1.0
 ```
+
+If you are using Symfony2, we recommend to use our [Webling Bundle](https://github.com/terminal42/webling-bundle).
+
 
 ## Usage
 
@@ -25,6 +29,7 @@ $client = new Client($subdomain, $apiKey, $apiVersion);
 // Example call for member list:
 $client->get('member');
 ```
+
 
 ## The EntityManager
 
