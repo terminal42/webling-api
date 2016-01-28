@@ -36,13 +36,7 @@ class Parameter
      */
     public function isLessThan($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s < %s',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s < %s', $value);
 
         return $this->parent;
     }
@@ -54,13 +48,7 @@ class Parameter
      */
     public function isLessOrEqualThan($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s <= %s',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s <= %s', $value);
 
         return $this->parent;
     }
@@ -72,13 +60,7 @@ class Parameter
      */
     public function isGreaterThan($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s > %s',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s > %s', $value);
 
         return $this->parent;
     }
@@ -90,13 +72,7 @@ class Parameter
      */
     public function isGreaterOrEqualThan($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s >= %s',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s >= %s', $value);
 
         return $this->parent;
     }
@@ -108,13 +84,7 @@ class Parameter
      */
     public function isEqualTo($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s = "%s"',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s = "%s"', $value);
 
         return $this->parent;
     }
@@ -126,13 +96,7 @@ class Parameter
      */
     public function isNotEqualTo($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s != "%s"',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s != "%s"', $value);
 
         return $this->parent;
     }
@@ -144,13 +108,7 @@ class Parameter
      */
     public function like($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s LIKE "%s"',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s LIKE "%s"', $value);
 
         return $this->parent;
     }
@@ -162,13 +120,7 @@ class Parameter
      */
     public function notLike($value)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s NOT LIKE "%s"',
-            $this->property,
-            $value
-        );
+        $this->setQuery('%s NOT LIKE "%s"', $value);
 
         return $this->parent;
     }
@@ -178,11 +130,9 @@ class Parameter
      */
     public function isEmpty()
     {
-        $this->validate();
-
         $this->query = sprintf(
             '%s IS EMPTY',
-            $this->property
+            $this->quote($this->property)
         );
 
         return $this->parent;
@@ -193,11 +143,9 @@ class Parameter
      */
     public function isNotEmpty()
     {
-        $this->validate();
-
         $this->query = sprintf(
             '%s IS NOT EMPTY',
-            $this->property
+            $this->quote($this->property)
         );
 
         return $this->parent;
@@ -210,13 +158,7 @@ class Parameter
      */
     public function in(array $values)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s IN ("%s")',
-            $this->property,
-            implode('", "', $values)
-        );
+        $this->setQuery('%s IN (%s)', $values);
 
         return $this->parent;
     }
@@ -228,17 +170,26 @@ class Parameter
      */
     public function notIn(array $values)
     {
-        $this->validate();
-
-        $this->query = sprintf(
-            '%s NOT IN ("%s")',
-            $this->property,
-            implode('", "', $values)
-        );
+        $this->setQuery('%s NOT IN (%s)', $values);
 
         return $this->parent;
     }
 
+    /**
+     * @param string $value
+     *
+     * @return Query
+     */
+    public function filter($value)
+    {
+        $this->setQuery('%s FILTER %s', $value);
+
+        return $this->parent;
+    }
+
+    /**
+     * @param Query $parent
+     */
     public function setParent(Query $parent)
     {
         $this->parent = $parent;
@@ -252,10 +203,32 @@ class Parameter
         return (string) $this->query;
     }
 
-    private function validate()
+    /**
+     * Builds the query string based on the given operation.
+     *
+     * @param string       $operation
+     * @param string|array $value
+     */
+    private function setQuery($operation, $value)
     {
-        if (null !== $this->query) {
-            throw new \BadMethodCallException('Query parameter already configured.');
-        }
+        $value = is_array($value) ? array_map([$this, 'quote'], $value) : $this->quote($value);
+
+        $this->query = sprintf(
+            $operation,
+            $this->quote($this->property),
+            $value
+        );
+    }
+
+    /**
+     * Add quotes to string if it contains special characters.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private function quote($value)
+    {
+        return preg_match('/[a-z0-9,]/i', $value) ? $value : sprintf('"%s"', $value);
     }
 }
