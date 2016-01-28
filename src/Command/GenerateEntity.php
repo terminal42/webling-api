@@ -127,7 +127,7 @@ use Terminal42\\WeblingApi\\EntityFactory as BaseFactory;
 
 class EntityFactory extends BaseFactory
 {
-    protected \$classes = $classes;
+    protected static \$classes = $classes;
 
 PHP;
 
