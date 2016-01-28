@@ -10,14 +10,15 @@ class Multienum extends Enum
     /**
      * @var array
      */
-    private $value;
+    protected $value;
 
     /**
      * Constructor.
      *
      * @param array|null $initial_value
+     *
+     * @throws \InvalidArgumentException
      */
-    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(array $initial_value = null)
     {
         if (null === $initial_value) {

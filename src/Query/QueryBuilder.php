@@ -4,8 +4,6 @@ namespace Terminal42\WeblingApi\Query;
 
 class QueryBuilder
 {
-    private $groups;
-
     /**
      * @param string $property
      *

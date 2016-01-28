@@ -9,7 +9,7 @@ class Date extends \DateTime
      *
      * @param string $value
      */
-    function __construct($value)
+    public function __construct($value)
     {
         parent::__construct($value . ' 0:00:00');
     }

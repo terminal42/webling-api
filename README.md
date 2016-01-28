@@ -41,7 +41,7 @@ whenever you need them. That way you can easily iterate over a list of members:
 ```php
 $em = EntityManager::createForAccount($subdomain, $apiKey);
 
-$entityList = $em->findAll('member', 'filterkeywords');
+$entityList = $em->findAll('member');
 
 foreach ($entityList as $member) {
 

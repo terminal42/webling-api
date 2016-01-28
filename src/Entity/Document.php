@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Entity;
 
-class Document extends AbstractEntity implements EntityInterface
+class Document extends AbstractEntity
 {
     /**
      * {@inheritdoc}

@@ -49,7 +49,7 @@ abstract class AbstractRepository implements RepositoryInterface
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      */
-    public function findBy(Query $query = null, $sort = '', $direction = '')
+    public function findBy(Query $query, $sort = '', $direction = '')
     {
         return $this->manager->findAll($this->getType(), $query, $sort, $direction);
     }

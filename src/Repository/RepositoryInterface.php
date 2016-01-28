@@ -46,5 +46,5 @@ interface RepositoryInterface
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findBy(Query $query = null, $sort = '', $direction = '');
+    public function findBy(Query $query, $sort = '', $direction = '');
 }

@@ -9,12 +9,17 @@ namespace Terminal42\WeblingApi\Property;
  */
 class Enum
 {
-    private $value;
+    /**
+     * @var string
+     */
+    protected $value;
 
     /**
      * Constructor.
      *
      * @param string|null $initial_value
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct($initial_value = null)
     {
@@ -60,6 +65,6 @@ class Enum
      */
     public function __toString()
     {
-        return $this->value;
+        return (string) $this->value;
     }
 }

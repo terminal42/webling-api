@@ -9,7 +9,7 @@ use Terminal42\WeblingApi\Query\Query;
 /**
  * @method EntityList|Member[] findAll($sort = '', $direction = '')
  * @method Member              findById($id)
- * @method EntityList|Member[] findBy(Query $query = null, $sort = '', $direction = '')
+ * @method EntityList|Member[] findBy(Query $query, $sort = '', $direction = '')
  */
 class MemberRepository extends AbstractRepository
 {

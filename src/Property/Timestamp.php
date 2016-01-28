@@ -9,7 +9,7 @@ class Timestamp extends \DateTime
      *
      * @param string $value
      */
-    function __construct($value)
+    public function __construct($value)
     {
         parent::__construct($value . ':00');
     }

@@ -13,10 +13,12 @@ class Query
 
     /**
      * Constructor.
+     *
+     * @param Parameter|Query $block
      */
-    public function __construct($parameterOrGroup)
+    public function __construct($block)
     {
-        $this->blocks[] = $parameterOrGroup;
+        $this->blocks[] = $block;
     }
 
     /**

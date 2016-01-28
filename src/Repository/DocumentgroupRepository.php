@@ -9,7 +9,7 @@ use Terminal42\WeblingApi\Query\Query;
 /**
  * @method EntityList|Documentgroup[] findAll($sort = '', $direction = '')
  * @method Documentgroup              findById($id)
- * @method EntityList|Documentgroup[] findBy(Query $query = null, $sort = '', $direction = '')
+ * @method EntityList|Documentgroup[] findBy(Query $query, $sort = '', $direction = '')
  */
 class DocumentgroupRepository extends AbstractRepository
 {

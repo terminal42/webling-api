@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Entity;
 
-class Member extends AbstractEntity implements EntityInterface
+class Member extends AbstractEntity
 {
     const IMAGE_ORIGINAL = 'original';
     const IMAGE_THUMB    = 'thumb';

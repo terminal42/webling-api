@@ -37,7 +37,7 @@ class Client implements ClientInterface
     /**
      * {@inheritdoc}
      */
-    public function get($url, $query = [])
+    public function get($url, array $query = [])
     {
         try {
             $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);

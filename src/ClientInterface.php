@@ -18,7 +18,7 @@ interface ClientInterface
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      */
-    public function get($url, $query = []);
+    public function get($url, array $query = []);
 
     /**
      * Sends a POST request.
