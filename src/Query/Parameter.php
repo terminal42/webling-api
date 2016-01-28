@@ -84,7 +84,7 @@ class Parameter
      */
     public function isEqualTo($value)
     {
-        $this->setQuery('%s = "%s"', $value);
+        $this->setQuery('%s = %s', $value);
 
         return $this->parent;
     }
@@ -96,7 +96,7 @@ class Parameter
      */
     public function isNotEqualTo($value)
     {
-        $this->setQuery('%s != "%s"', $value);
+        $this->setQuery('%s != %s', $value);
 
         return $this->parent;
     }
@@ -108,7 +108,7 @@ class Parameter
      */
     public function like($value)
     {
-        $this->setQuery('%s LIKE "%s"', $value);
+        $this->setQuery('%s LIKE %s', $value);
 
         return $this->parent;
     }
@@ -120,7 +120,7 @@ class Parameter
      */
     public function notLike($value)
     {
-        $this->setQuery('%s NOT LIKE "%s"', $value);
+        $this->setQuery('%s NOT LIKE %s', $value);
 
         return $this->parent;
     }
