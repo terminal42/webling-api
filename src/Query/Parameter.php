@@ -132,7 +132,7 @@ class Parameter
     {
         $this->query = sprintf(
             '%s IS EMPTY',
-            $this->quote($this->property)
+            $this->quoteProperty($this->property)
         );
 
         return $this->parent;
@@ -145,7 +145,7 @@ class Parameter
     {
         $this->query = sprintf(
             '%s IS NOT EMPTY',
-            $this->quote($this->property)
+            $this->quoteProperty($this->property)
         );
 
         return $this->parent;
@@ -211,11 +211,11 @@ class Parameter
      */
     private function setQuery($operation, $value)
     {
-        $value = is_array($value) ? array_map([$this, 'quote'], $value) : $this->quote($value);
+        $value = '"' . (is_array($value) ? implode('", "', $value) : $value) . '"';
 
         $this->query = sprintf(
             $operation,
-            $this->quote($this->property),
+            $this->quoteProperty($this->property),
             $value
         );
     }
@@ -227,7 +227,7 @@ class Parameter
      *
      * @return string
      */
-    private function quote($value)
+    private function quoteProperty($value)
     {
         return preg_match('/^[a-z0-9,]+$/i', $value) ? $value : sprintf('"%s"', $value);
     }
