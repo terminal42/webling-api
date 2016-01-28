@@ -27,6 +27,11 @@ class EntityManager
     private $entities = [];
 
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
      * Constructor.
      *
      * @param ClientInterface        $client  The HTTP client to make requests to the server.
@@ -49,13 +54,11 @@ class EntityManager
      */
     public function getConfig()
     {
-        static $config;
-
-        if (null === $config) {
-            $config = $this->client->get('/config');
+        if (null === $this->config) {
+            $this->config = $this->client->get('/config');
         }
 
-        return $config;
+        return $this->config;
     }
 
     /**

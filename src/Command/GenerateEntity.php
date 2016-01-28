@@ -51,7 +51,8 @@ class GenerateEntity extends ManagerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $config = $this->manager->getConfig();
+            $config      = $this->manager->getConfig();
+            $definitions = $config['definitions'];
 
         } catch (HttpStatusException $e) {
             $output->writeln('Could not connect to the Webling API. Check your access details.');
@@ -65,11 +66,11 @@ class GenerateEntity extends ManagerAwareCommand
         $classes   = [];
         $namespace = $this->getNamespace($input, $output);
 
-        foreach ($this->getSupportedTypes($config) as $entity) {
+        foreach ($this->getSupportedTypes($definitions) as $entity) {
             $class            = ucfirst($entity);
             $classes[$entity] = $namespace . '\\Entity\\' . $class;
 
-            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $config[$entity]['properties']);
+            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definitions[$entity]['properties']);
         }
 
         $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'));
@@ -101,11 +102,11 @@ class GenerateEntity extends ManagerAwareCommand
         return $namespace;
     }
 
-    private function getSupportedTypes(array $config)
+    private function getSupportedTypes(array $definitions)
     {
         $entities = [];
 
-        foreach ($config as $type => $v) {
+        foreach ($definitions as $type => $v) {
             if ($this->manager->getFactory()->supports($type)) {
                 $entities[] = $type;
             }
