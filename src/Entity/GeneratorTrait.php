@@ -21,7 +21,7 @@ trait GeneratorTrait
 
     protected function valueFromProperty($name, $value)
     {
-        $property = $this->config['definitions']['properties'][$name];
+        $property = $this->config['properties'][$name];
         $datatype = $property['datatype'];
 
         switch ($datatype) {
@@ -69,7 +69,7 @@ trait GeneratorTrait
 
     protected function getPropertyNameById($id)
     {
-        foreach ($this->config['definitions']['properties'] as $name => $data) {
+        foreach ($this->config['properties'] as $name => $data) {
             if ($id === $data['id']) {
                 return $name;
             }

@@ -43,7 +43,7 @@ class EntityFactory implements EntityFactoryInterface
 
         if ($entity instanceof ConfigAwareInterface) {
             $config = $manager->getConfig();
-            $entity->setConfig($config[$data['type']]);
+            $entity->setConfig($config['definitions'][$data['type']]);
         }
 
         return $entity;
