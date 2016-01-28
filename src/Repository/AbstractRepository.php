@@ -29,7 +29,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function findAll($sort = '', $direction = '')
     {
-        return $this->manager->findAll($this->getType(), '', $sort, $direction);
+        return $this->manager->findAll($this->getType(), null, $sort, $direction);
     }
 
     /**
