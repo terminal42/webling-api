@@ -229,6 +229,6 @@ class Parameter
      */
     private function quote($value)
     {
-        return preg_match('/[a-z0-9,]/i', $value) ? $value : sprintf('"%s"', $value);
+        return preg_match('/^[a-z0-9,]+$/i', $value) ? $value : sprintf('"%s"', $value);
     }
 }
