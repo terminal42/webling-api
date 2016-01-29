@@ -154,9 +154,7 @@ abstract class AbstractEntity implements EntityInterface
             'readonly'   => (int) $this->isReadonly(),
             'properties' => array_map(
                 function($v) {
-                    $v = (string) $v;
-
-                    return '' === $v ? null : $v;
+                    return (null === $v || is_scalar($v)) ? $v : (string) $v;
                 },
                 $this->getProperties()
             ),
