@@ -4,6 +4,7 @@ namespace Terminal42\WeblingApi;
 
 use GuzzleHttp\Exception\ParseException as GuzzleParseException;
 use GuzzleHttp\Exception\RequestException;
+use Terminal42\WeblingApi\Exception\ApiErrorException;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
 use Terminal42\WeblingApi\Exception\NotFoundException;
 use Terminal42\WeblingApi\Exception\ParseException;
@@ -95,10 +96,18 @@ class Client implements ClientInterface
     {
         if ($e instanceof RequestException) {
 
-            if (null !== $e->getResponse()
-                && 404 === $e->getResponse()->getStatusCode()
-            ) {
-                return new NotFoundException($e->getMessage(), $e->getCode(), $e);
+            if ($e->hasResponse()) {
+                $response = $e->getResponse();
+                $body     = @json_decode($response->getBody(), true);
+                $error    = (is_array($body) && !empty($body['error'])) ? $body['error'] : $e->getMessage();
+
+                switch ($e->getResponse()->getStatusCode()) {
+                    case 404:
+                        return new NotFoundException($error, $response->getStatusCode(), $e);
+
+                    default:
+                        return new ApiErrorException($error, $response->getStatusCode(), $e);
+                }
             }
 
             return new HttpStatusException($e->getMessage(), $e->getCode(), $e);
