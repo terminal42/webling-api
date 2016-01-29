@@ -185,7 +185,7 @@ PHP;
     public function set$method(\$value)
     {
         \$name = \$this->getPropertyNameById($id);
-        \$this->setProperty(\$name, (string) \$value);
+        \$this->setProperty(\$name, \$value);
 
         return \$this;
     }
