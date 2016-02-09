@@ -5,34 +5,29 @@ namespace Terminal42\WeblingApi\Property;
 /**
  * An enhanced \SplEnum that supports multiple values.
  */
-class Multienum extends Enum
+abstract class Multienum extends Enum
 {
-    /**
-     * @var array
-     */
-    protected $value;
-
     /**
      * Constructor.
      *
      * @param array|null $initial_value
      *
-     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
      */
     public function __construct(array $initial_value = null)
     {
         if (null === $initial_value) {
             $constants = $this->getConstList(true);
 
-            $this->value = isset($constants['__default']) ? $constants['__default'] : null;
+            $this->value = array_key_exists('__default', $constants) ? $constants['__default'] : null;
 
         } else {
             $constants = $this->getConstList();
             $diff      = array_diff($initial_value, $constants);
 
-            if (!empty($diff)) {
-                throw new \InvalidArgumentException(
-                    sprintf('%s is not a valid enum value [%s]', implode(',', $diff), implode(',', $constants))
+            if (0 === count($diff)) {
+                throw new \UnexpectedValueException(
+                    sprintf('%s are not a valid enum values [%s]', implode(',', $diff), implode(',', $constants))
                 );
             }
 

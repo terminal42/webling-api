@@ -7,7 +7,7 @@ namespace Terminal42\WeblingApi\Property;
  *
  * @see http://de2.php.net/manual/en/class.splenum.php
  */
-class Enum
+abstract class Enum implements \JsonSerializable
 {
     /**
      * @var string
@@ -19,20 +19,20 @@ class Enum
      *
      * @param string|null $initial_value
      *
-     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
      */
     public function __construct($initial_value = null)
     {
         if (null === $initial_value) {
             $constants = $this->getConstList(true);
 
-            $this->value = isset($constants['__default']) ? $constants['__default'] : null;
+            $this->value = array_key_exists('__default', $constants) ? $constants['__default'] : null;
 
         } else {
             $constants = $this->getConstList();
 
-            if (!in_array($initial_value, $constants)) {
-                throw new \InvalidArgumentException(
+            if (!in_array($initial_value, $constants, true)) {
+                throw new \UnexpectedValueException(
                     sprintf('%s is not a valid enum value [%s]', $initial_value, implode(',', $constants))
                 );
             }
@@ -55,11 +55,19 @@ class Enum
             $constants = $class->getConstants();
         }
 
-        if (!$include_default && isset($constants['__default'])) {
+        if (!$include_default && array_key_exists('__default', $constants)) {
             return array_diff_key($constants, ['__default' => '']);
         }
 
         return $constants;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
     }
 
     /**
