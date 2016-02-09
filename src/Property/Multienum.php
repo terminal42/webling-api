@@ -35,6 +35,8 @@ class Multienum extends Enum
                     sprintf('%s is not a valid enum value [%s]', implode(',', $diff), implode(',', $constants))
                 );
             }
+
+            $this->value = $initial_value;
         }
     }
 

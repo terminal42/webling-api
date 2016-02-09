@@ -36,6 +36,8 @@ class Enum
                     sprintf('%s is not a valid enum value [%s]', $initial_value, implode(',', $constants))
                 );
             }
+
+            $this->value = $initial_value;
         }
     }
 
