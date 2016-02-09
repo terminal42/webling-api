@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Property;
 
-class File
+class File implements \JsonSerializable
 {
     private $href;
     private $size;
@@ -57,5 +57,19 @@ class File
     public function getTimestamp()
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'href'      => $this->href,
+            'size'      => $this->size,
+            'ext'       => $this->ext,
+            'mime'      => $this->mime,
+            'timestamp' => $this->timestamp->jsonSerialize(),
+        ];
     }
 }

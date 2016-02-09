@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Property;
 
-class Image extends File
+class Image extends File implements \JsonSerializable
 {
     private $dimensions;
 
@@ -13,12 +13,22 @@ class Image extends File
         $this->dimensions = $dimensions;
     }
 
-
     /**
      * @return array
      */
     public function getDimensions()
     {
         return $this->dimensions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        $data = parent::jsonSerialize();
+        $data['dimensions'] = $this->dimensions;
+
+        return $data;
     }
 }

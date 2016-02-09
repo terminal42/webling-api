@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Property;
 
-class Timestamp extends \DateTime
+class Timestamp extends \DateTime implements \JsonSerializable
 {
     /**
      * Constructor.
@@ -12,6 +12,14 @@ class Timestamp extends \DateTime
     public function __construct($value)
     {
         parent::__construct($value . ':00');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->format('Y-m-d H:i');
     }
 
     /**

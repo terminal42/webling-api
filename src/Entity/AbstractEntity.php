@@ -152,12 +152,7 @@ abstract class AbstractEntity implements EntityInterface
         $data = [
             'type'       => $this->getType(),
             'readonly'   => (int) $this->isReadonly(),
-            'properties' => array_map(
-                function($v) {
-                    return (null === $v || is_scalar($v)) ? $v : (string) $v;
-                },
-                $this->getProperties()
-            ),
+            'properties' => $this->getProperties(),
             'parents'    => $this->getParents() ? $this->getParents()->getIds() : [],
             'links'      => $this->getLinks() ? $this->getLinks()->getIds() : []
         ];
