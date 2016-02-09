@@ -155,14 +155,19 @@ class $className extends BaseEntity implements ConfigAwareInterface
 PHP;
 
         foreach ($properties as $name => $property) {
-            $id     = $property['id'];
-            $method = $this->normalizeProperty($name);
-            $hint   = $this->getTypehint($property['datatype'], $name, $namespace);
+            $id       = $property['id'];
+            $method   = $this->normalizeProperty($name);
+            $hint     = $this->getTypehint($property['datatype'], $name, $namespace);
 
-            if ('enum' === $property['datatype']) {
-                $this->generateEnum($namespace, $method, $path, $property);
-            } elseif ('multienum' === $property['datatype']) {
-                $this->generateEnum($namespace, $method, $path, $property, true);
+            $isScalar = in_array($hint, ['int', 'float', 'bool', 'string'], true);
+            $type     = $isScalar ? '' : $hint . ' ';
+            $default  = $isScalar ? '' : ' = null';
+            $getter   = '$this->valueFromProperty($name, $this->getProperty($name))';
+
+            if ('enum' === $property['datatype'] || 'multienum' === $property['datatype']) {
+                $this->generateEnum($namespace, $method, $path, $property, 'multienum' === $property['datatype']);
+                $default = '';
+                $getter  = 'new ' . $hint . '($this->getProperty($name))';
             }
 
             $buffer .= <<<PHP
@@ -174,7 +179,7 @@ PHP;
     {
         \$name = \$this->getPropertyNameById($id);
 
-        return \$this->valueFromProperty(\$name, \$this->getProperty(\$name));
+        return $getter;
     }
 
     /**
@@ -182,7 +187,7 @@ PHP;
      *
      * @return \$this
      */
-    public function set$method(\$value)
+    public function set$method($type\$value$default)
     {
         \$name = \$this->getPropertyNameById($id);
         \$this->setProperty(\$name, \$value);

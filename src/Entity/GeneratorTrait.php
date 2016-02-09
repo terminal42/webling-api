@@ -33,10 +33,6 @@ trait GeneratorTrait
             case 'longtext':
                 return $value;
 
-            case 'enum':
-                // TODO: implement enum
-                return $value;
-
             case 'file':
                 return new File(
                     $value['href'],
