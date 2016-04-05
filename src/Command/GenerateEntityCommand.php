@@ -10,7 +10,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
 
-class GenerateEntity extends ManagerAwareCommand
+class GenerateEntityCommand extends ManagerAwareCommand
 {
     /**
      * @var Filesystem
