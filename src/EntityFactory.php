@@ -34,7 +34,7 @@ class EntityFactory implements EntityFactoryInterface
 
         $entity = new $class(
             $id,
-            $data['readyonly'],
+            $data['readonly'],
             $data['properties'],
             $children,
             new EntityList($data['type'], $data['parents'], $manager),
