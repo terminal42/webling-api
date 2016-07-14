@@ -12,16 +12,16 @@ trait GeneratorTrait
     /**
      * @var array
      */
-    private $config;
+    private $definition;
 
-    public function setConfig(array $config)
+    public function setDefinition(array $definition)
     {
-        $this->config = $config;
+        $this->definition = $definition;
     }
 
     protected function valueFromProperty($name, $value)
     {
-        $property = $this->config['properties'][$name];
+        $property = $this->definition['properties'][$name];
         $datatype = $property['datatype'];
 
         switch ($datatype) {
@@ -65,7 +65,7 @@ trait GeneratorTrait
 
     protected function getPropertyNameById($id)
     {
-        foreach ($this->config['properties'] as $name => $data) {
+        foreach ($this->definition['properties'] as $name => $data) {
             if ($id === $data['id']) {
                 return $name;
             }

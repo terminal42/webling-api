@@ -51,8 +51,7 @@ class GenerateEntityCommand extends ManagerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $config      = $this->manager->getConfig();
-            $definitions = $config['definitions'];
+            $definition = $this->manager->getDefinition();
 
         } catch (HttpStatusException $e) {
             $output->writeln('Could not connect to the Webling API. Check your access details.');
@@ -60,17 +59,18 @@ class GenerateEntityCommand extends ManagerAwareCommand
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
                 $output->writeln($e->getMessage());
             }
+
             return;
         }
 
         $classes   = [];
         $namespace = $this->getNamespace($input, $output);
 
-        foreach ($this->getSupportedTypes($definitions) as $entity) {
+        foreach ($this->getSupportedTypes($definition) as $entity) {
             $class            = ucfirst($entity);
             $classes[$entity] = $namespace . '\\Entity\\' . $class;
 
-            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definitions[$entity]['properties']);
+            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definition[$entity]['properties']);
         }
 
         $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'));
@@ -102,11 +102,11 @@ class GenerateEntityCommand extends ManagerAwareCommand
         return $namespace;
     }
 
-    private function getSupportedTypes(array $definitions)
+    private function getSupportedTypes(array $definition)
     {
         $entities = [];
 
-        foreach ($definitions as $type => $v) {
+        foreach ($definition as $type => $v) {
             if ($this->manager->getFactory()->supports($type)) {
                 $entities[] = $type;
             }
@@ -144,11 +144,11 @@ PHP;
 
 namespace $namespace\\Entity;
 
-use Terminal42\\WeblingApi\\Entity\\ConfigAwareInterface;
+use Terminal42\\WeblingApi\\Entity\\DefinitionAwareInterface;
 use Terminal42\\WeblingApi\\Entity\\GeneratorTrait;
 use Terminal42\\WeblingApi\\Entity\\$className as BaseEntity;
 
-class $className extends BaseEntity implements ConfigAwareInterface
+class $className extends BaseEntity implements DefinitionAwareInterface
 {
     use GeneratorTrait;
 

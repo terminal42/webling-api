@@ -29,7 +29,7 @@ class EntityManager
     /**
      * @var array
      */
-    private $config;
+    private $definition;
 
     /**
      * Constructor.
@@ -44,21 +44,18 @@ class EntityManager
     }
 
     /**
-     * Returns the configuration of entities and other account information.
-     * ATTENTION: This call is currently undocumented and could be removed in any update to the API.
+     * Returns the definition of entities
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
-     *
-     * @internal
      */
-    public function getConfig()
+    public function getDefinition()
     {
-        if (null === $this->config) {
-            $this->config = $this->client->get('/config');
+        if (null === $this->definition) {
+            $this->definition = $this->client->get('/definition');
         }
 
-        return $this->config;
+        return $this->definition;
     }
 
     /**
