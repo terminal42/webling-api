@@ -4,6 +4,7 @@ namespace Terminal42\WeblingApi;
 
 use GuzzleHttp\Exception\ParseException as GuzzleParseException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\ResponseInterface;
 use Terminal42\WeblingApi\Exception\ApiErrorException;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
 use Terminal42\WeblingApi\Exception\NotFoundException;
@@ -42,6 +43,11 @@ class Client implements ClientInterface
     {
         try {
             $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);
+
+            if (200 !== $response->getStatusCode()) {
+                throw $this->convertResponseToException($response);
+            }
+
             return $response->json();
 
         } catch (\Exception $e) {
@@ -55,7 +61,11 @@ class Client implements ClientInterface
     public function post($url, $json)
     {
         try {
-            return $this->client->post(ltrim($url, '/'), ['body' => $json]);
+            $response = $this->client->post(ltrim($url, '/'), ['body' => $json]);
+
+            if (201 !== $response->getStatusCode()) {
+                throw $this->convertResponseToException($response);
+            }
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -67,7 +77,11 @@ class Client implements ClientInterface
     public function put($url, $json)
     {
         try {
-            return $this->client->put(ltrim($url, '/'), ['body' => $json]);
+            $response = $this->client->put(ltrim($url, '/'), ['body' => $json]);
+
+            if (204 !== $response->getStatusCode()) {
+                throw $this->convertResponseToException($response);
+            }
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -79,7 +93,11 @@ class Client implements ClientInterface
     public function delete($url)
     {
         try {
-            return $this->client->delete(ltrim($url, '/'));
+            $response = $this->client->delete(ltrim($url, '/'));
+
+            if (204 !== $response->getStatusCode()) {
+                throw $this->convertResponseToException($response);
+            }
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -92,22 +110,11 @@ class Client implements ClientInterface
      *
      * @return \Exception
      */
-    private function convertException(\Exception $e)
+    protected function convertException(\Exception $e)
     {
         if ($e instanceof RequestException) {
-
             if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                $body     = @json_decode($response->getBody(), true);
-                $error    = (is_array($body) && !empty($body['error'])) ? $body['error'] : $e->getMessage();
-
-                switch ($e->getResponse()->getStatusCode()) {
-                    case 404:
-                        return new NotFoundException($error, $response->getStatusCode(), $e);
-
-                    default:
-                        return new ApiErrorException($error, $response->getStatusCode(), $e);
-                }
+                return $this->convertResponseToException($e->getResponse(), $e);
             }
 
             return new HttpStatusException($e->getMessage(), $e->getCode(), $e);
@@ -118,5 +125,28 @@ class Client implements ClientInterface
         }
 
         return $e;
+    }
+
+    /**
+     * Convert a Guzzle Response to an exception. Useful if status code is not as expected.
+     *
+     * @param ResponseInterface $response
+     * @param \Exception|null   $exception
+     *
+     * @return \RuntimeException
+     */
+    protected function convertResponseToException(ResponseInterface $response, \Exception $exception = null)
+    {
+        $body = @json_decode($response->getBody(), true);
+
+        if (!is_array($body) || empty($body['error'])) {
+            return new HttpStatusException($response->getBody(), $response->getStatusCode(), $exception);
+        }
+
+        if (404 === $response->getStatusCode()) {
+            return new NotFoundException($body['error'], $response->getStatusCode(), $exception);
+        }
+
+        return new ApiErrorException($body['error'], $response->getStatusCode(), $exception);
     }
 }
