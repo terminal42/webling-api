@@ -3,7 +3,9 @@
 namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
+use Terminal42\WeblingApi\Exception\ApiErrorException;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
+use Terminal42\WeblingApi\Exception\NotFoundException;
 use Terminal42\WeblingApi\Exception\ParseException;
 use Terminal42\WeblingApi\Query\Query;
 
@@ -48,6 +50,8 @@ class EntityManager
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
+     * @throws NotFoundException   If the API returned a HTTP status code 404
+     * @throws ApiErrorException   If the API returned an error message
      */
     public function getDefinition()
     {
@@ -80,6 +84,8 @@ class EntityManager
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
+     * @throws NotFoundException   If the API returned a HTTP status code 404
+     * @throws ApiErrorException   If the API returned an error message
      */
     public function findAll($type, Query $query = null, $sort = '', $direction = '')
     {
@@ -104,6 +110,8 @@ class EntityManager
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
+     * @throws NotFoundException   If the API returned a HTTP status code 404
+     * @throws ApiErrorException   If the API returned an error message
      */
     public function find($type, $id)
     {
@@ -124,6 +132,8 @@ class EntityManager
      *
      * @throws \InvalidArgumentException If the entity is readonly
      * @throws HttpStatusException       If there was a problem with the request
+     * @throws NotFoundException         If the API returned a HTTP status code 404
+     * @throws ApiErrorException         If the API returned an error message
      */
     public function persist(EntityInterface $entity)
     {
@@ -148,6 +158,8 @@ class EntityManager
      * @throws \UnexpectedValueException If the entity does not have an ID
      * @throws \InvalidArgumentException If the entity is readonly
      * @throws HttpStatusException       If there was a problem with the request
+     * @throws NotFoundException         If the API returned a HTTP status code 404
+     * @throws ApiErrorException         If the API returned an error message
      */
     public function remove(EntityInterface $entity)
     {
@@ -172,6 +184,8 @@ class EntityManager
      * @param EntityInterface $entity
      *
      * @throws HttpStatusException If there was a problem with the request
+     * @throws NotFoundException   If the API returned a HTTP status code 404
+     * @throws ApiErrorException   If the API returned an error message
      */
     private function create(EntityInterface $entity)
     {
@@ -189,6 +203,8 @@ class EntityManager
      * @param EntityInterface $entity
      *
      * @throws HttpStatusException If there was a problem with the request
+     * @throws NotFoundException   If the API returned a HTTP status code 404
+     * @throws ApiErrorException   If the API returned an error message
      */
     private function update(EntityInterface $entity)
     {
