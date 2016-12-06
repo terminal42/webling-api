@@ -48,6 +48,8 @@ class EntityManager
     /**
      * Returns the definition of entities
      *
+     * @return array
+     *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      * @throws NotFoundException   If the API returned a HTTP status code 404
@@ -60,6 +62,30 @@ class EntityManager
         }
 
         return $this->definition;
+    }
+
+    /**
+     * Returns the latest revision number from replication dataset.
+     *
+     * @return int
+     */
+    public function getLatestRevisionId()
+    {
+        $result = $this->client->get('/replicate');
+
+        return (int) $result['revision'];
+    }
+
+    /**
+     * Returns the changeset for latest revision compared to given ID.
+     *
+     * @param int $revisionId
+     *
+     * @return Changes
+     */
+    public function getChanges($revisionId)
+    {
+        return new Changes($revisionId, $this->client->get('/replicate/' . (int) $revisionId), $this);
     }
 
     /**
