@@ -1,5 +1,8 @@
 # terminal42/webling-api
 
+[![Unit Test Status](https://img.shields.io/travis/terminal42/webling-api/develop.svg)](https://travis-ci.org/terminal42/webling-api/)
+[![Coverage Status](https://img.shields.io/coveralls/terminal42/webling-api.svg)](https://coveralls.io/github/terminal42/webling-api)
+
 An API client for the REST API of webling.ch.
 This client is currently used for our own projects and is not stable at all.
 It thus might be subject to heavy changes.
