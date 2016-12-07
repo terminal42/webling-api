@@ -87,7 +87,7 @@ class Changes
      *
      * @return EntityList[]
      */
-    public function getAllObjects()
+    public function getAllEntities()
     {
         if (!is_array($this->changes['objects']) || 0 === count($this->changes['objects'])) {
             return [];
@@ -109,7 +109,7 @@ class Changes
      *
      * @return EntityList
      */
-    public function getObjectsOfType($type)
+    public function getEntities($type)
     {
         $ids = isset($this->changes['objects'][$type]) ? $this->changes['objects'][$type] : [];
 

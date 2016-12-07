@@ -136,4 +136,69 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
 
         $manager->remove($entity);
     }
+
+    public function testGetLatestRevisionId()
+    {
+        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $manager = new EntityManager($client, new EntityFactory());
+
+        $client
+            ->expects($this->once())
+            ->method('get')
+            ->with('/replicate')
+            ->willReturn(
+                [
+                    'revision' => 1234,
+                    'version'  => 720
+                ]
+            )
+        ;
+
+        $this->assertEquals(1234, $manager->getLatestRevisionId());
+    }
+
+    public function testGetChanges()
+    {
+        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $manager = new EntityManager($client, new EntityFactory());
+
+        $client
+            ->expects($this->once())
+            ->method('get')
+            ->with('/replicate/1234')
+            ->willReturn(
+                [
+                    'objects'      => [
+                        'member'      => [
+                            469,
+                            492,
+                        ],
+                        'membergroup' => [
+                            554,
+                            552,
+                        ],
+                        'debitor'     => [
+                            848,
+                        ],
+                    ],
+                    'context'      => [],
+                    'definitions'  => [],
+                    'settings'     => false,
+                    'quota'        => true,
+                    'subscription' => false,
+                    'revision'     => 1530,
+                    'version'      => 720,
+                ]
+            )
+        ;
+
+        $changes = $manager->getChanges(1234);
+
+        $this->assertInstanceOf('Terminal42\WeblingApi\Changes', $changes);
+        $this->assertEquals(1234, $changes->getRevisionFrom());
+        $this->assertEquals(1530, $changes->getRevisionTo());
+
+        $this->assertInstanceOf('Terminal42\WeblingApi\EntityList', $changes->getEntities('member'));
+        $this->assertEquals([469, 492], $changes->getEntities('member')->getIds());
+    }
 }
