@@ -250,12 +250,12 @@ class Parameter
     /**
      * Add quotes to property name if it contains special characters.
      *
-     * @param string $value
+     * @param string $name
      *
      * @return string
      */
-    private function quoteProperty($value)
+    private function quoteProperty($name)
     {
-        return preg_match('/^[a-z0-9,\*]+$/i', $value) ? $value : sprintf('"%s"', $value);
+        return preg_match('/^[a-z0-9,\*]+$/i', $name) ? $name : sprintf('`%s`', $name);
     }
 }
