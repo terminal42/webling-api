@@ -30,6 +30,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *less than* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -42,6 +44,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *less than or equal to* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -54,6 +58,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *greater than* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -66,6 +72,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *greater than or equal to* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -78,6 +86,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *equal to* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -90,6 +100,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *not equal to* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -102,6 +114,9 @@ class Parameter
     }
 
     /**
+     * Queries if property is *equals* to given value.
+     * Placeholders * (many characters) and ? (one character) are allowed.
+     *
      * @param string $value
      *
      * @return Query
@@ -114,6 +129,9 @@ class Parameter
     }
 
     /**
+     * Queries if property is *not equals* to given value.
+     * Placeholders * (many characters) and ? (one character) are allowed.
+     *
      * @param string $value
      *
      * @return Query
@@ -126,6 +144,8 @@ class Parameter
     }
 
     /**
+     * Queries if property is *empty*.
+     *
      * @return Query
      */
     public function isEmpty()
@@ -139,6 +159,7 @@ class Parameter
     }
 
     /**
+     * Queries if property is *not empty*.
      * @return Query
      */
     public function isNotEmpty()
@@ -152,6 +173,8 @@ class Parameter
     }
 
     /**
+     * Queries if property value is *one of given options*.
+     *
      * @param string[] $values
      *
      * @return Query
@@ -164,6 +187,8 @@ class Parameter
     }
 
     /**
+     * Queries if property value is *not one of given options*.
+     *
      * @param string[] $values
      *
      * @return Query
@@ -176,6 +201,8 @@ class Parameter
     }
 
     /**
+     * Queries if property *contains* given value.
+     *
      * @param string $value
      *
      * @return Query
@@ -221,7 +248,7 @@ class Parameter
     }
 
     /**
-     * Add quotes to string if it contains special characters.
+     * Add quotes to property name if it contains special characters.
      *
      * @param string $value
      *

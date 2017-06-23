@@ -28,7 +28,7 @@ class EntityFactory implements EntityFactoryInterface
 
         $children = [];
 
-        foreach ($data['children'] as $type => $ids) {
+        foreach ((array) $data['children'] as $type => $ids) {
             $children[$type] = new EntityList($type, $ids, $manager);
         }
 

@@ -65,7 +65,7 @@ trait GeneratorTrait
 
     protected function getPropertyNameById($id)
     {
-        foreach ($this->definition['properties'] as $name => $data) {
+        foreach ((array) $this->definition['properties'] as $name => $data) {
             if ($id === $data['id']) {
                 return $name;
             }

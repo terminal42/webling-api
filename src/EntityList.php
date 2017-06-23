@@ -110,7 +110,7 @@ class EntityList implements \Iterator, \Countable
             throw new \InvalidArgumentException('The entity must have an ID.');
         }
 
-        if (!in_array($id, $this->ids)) {
+        if (!in_array($id, $this->ids, false)) {
             $this->ids[] = $id;
         }
 

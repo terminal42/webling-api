@@ -221,7 +221,7 @@ class $className extends $parent
 
 PHP;
 
-        foreach ($property['values'] as $value) {
+        foreach ((array) $property['values'] as $value) {
             $name = $this->normalizeConstant($className, $value);
 
             $buffer .= <<<PHP

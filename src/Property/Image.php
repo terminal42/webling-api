@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Property;
 
-class Image extends File implements \JsonSerializable
+class Image extends File
 {
     private $dimensions;
 

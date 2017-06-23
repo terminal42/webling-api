@@ -95,7 +95,7 @@ class Changes
 
         $objects = [];
 
-        foreach ($this->changes['objects'] as $type => $ids) {
+        foreach ((array) $this->changes['objects'] as $type => $ids) {
             $objects[$type] = new EntityList($type, $ids, $this->manager);
         }
 
