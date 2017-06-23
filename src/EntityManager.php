@@ -13,6 +13,7 @@ use Terminal42\WeblingApi\Repository\RepositoryInterface;
 class EntityManager
 {
     const API_VERSION = 1;
+    const API_REVISION = 82;
 
     /**
      * @var ClientInterface
