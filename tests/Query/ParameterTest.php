@@ -45,7 +45,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
 
         $parameter = new Parameter('foo');
         $parameter->isNotEmpty();
-        $this->assertSame('foo IS NOT EMPTY', $parameter->build());
+        $this->assertSame('NOT (foo IS EMPTY)', $parameter->build());
 
         $parameter = new Parameter('foo');
         $parameter->in(['bar', 'baz']);
@@ -53,7 +53,11 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
 
         $parameter = new Parameter('foo');
         $parameter->notIn(['bar', 'baz']);
-        $this->assertSame('foo NOT IN ("bar", "baz")', $parameter->build());
+        $this->assertSame('NOT (foo IN ("bar", "baz"))', $parameter->build());
+
+        $parameter = new Parameter('foo');
+        $parameter->notLike('bar');
+        $this->assertSame('NOT (foo LIKE "bar")', $parameter->build());
     }
 
     public function testEscapesPropertyIfNecessary()
@@ -101,7 +105,6 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
             ['isEqualTo', '='],
             ['isNotEqualTo', '!='],
             ['like', 'LIKE'],
-            ['notLike', 'NOT LIKE'],
             ['filter', 'FILTER'],
         ];
     }

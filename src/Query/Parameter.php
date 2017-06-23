@@ -156,7 +156,7 @@ class Parameter implements BuildableInterface
      */
     public function notLike($value)
     {
-        $this->setQuery('%s NOT LIKE %s', $value);
+        $this->setQuery('NOT (%s LIKE %s)', $value);
 
         return $this->parent;
     }
@@ -184,7 +184,7 @@ class Parameter implements BuildableInterface
      */
     public function isNotEmpty()
     {
-        $this->setQuery('%s IS NOT EMPTY', null);
+        $this->setQuery('NOT (%s IS EMPTY)', null);
 
         return $this->parent;
     }
@@ -216,7 +216,7 @@ class Parameter implements BuildableInterface
      */
     public function notIn(array $values)
     {
-        $this->setQuery('%s NOT IN (%s)', $values);
+        $this->setQuery('NOT (%s IN (%s))', $values);
 
         return $this->parent;
     }
