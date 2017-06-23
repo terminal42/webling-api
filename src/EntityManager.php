@@ -279,17 +279,19 @@ class EntityManager
      */
     private function prepareOrder(array $order)
     {
-        $invalidDirections = array_diff(
-            $order,
-            [RepositoryInterface::DIRECTION_ASC, RepositoryInterface::DIRECTION_DESC]
-        );
+        $props = [];
+        $directions = [RepositoryInterface::DIRECTION_ASC, RepositoryInterface::DIRECTION_DESC];
 
-        if (count($invalidDirections) > 0) {
-            throw new \InvalidArgumentException(
-                sprintf('Invalid sorting direction(s) "%s"', implode('", "', $invalidDirections))
-            );
+        foreach ($order as $property => $direction) {
+            if (!in_array($direction, $directions, true)) {
+                throw new \InvalidArgumentException(
+                    sprintf('Invalid sorting direction "%s" for property "%s"', $property, $direction)
+                );
+            }
+
+            $props[] = sprintf('`%s` %s', $property, $direction);
         }
 
-        return http_build_query($order, null, ', ');
+        return implode(', ', $props);
     }
 }
