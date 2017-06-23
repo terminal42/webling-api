@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Query;
 
-class Query
+class Query implements BuildableInterface
 {
     /**
      * @var array
@@ -28,8 +28,7 @@ class Query
      */
     public function andWhere($property)
     {
-        $parameter = new Parameter($property);
-        $parameter->setParent($this);
+        $parameter = new Parameter($property, $this);
 
         $this->blocks[] = 'AND';
         $this->blocks[] = $parameter;
@@ -44,8 +43,7 @@ class Query
      */
     public function orWhere($property)
     {
-        $parameter = new Parameter($property);
-        $parameter->setParent($this);
+        $parameter = new Parameter($property, $this);
 
         $this->blocks[] = 'OR';
         $this->blocks[] = $parameter;
@@ -83,11 +81,22 @@ class Query
      */
     public function build()
     {
+        $blocks = array_map(
+            function ($block) {
+                if ($block instanceof BuildableInterface) {
+                    return $block->build();
+                }
+
+                return (string) $block;
+            },
+            $this->blocks
+        );
+
         if (null !== $this->parent) {
-            return '(' . implode(' ', $this->blocks) . ')';
+            return '(' . implode(' ', $blocks) . ')';
         }
 
-        return implode(' ', $this->blocks);
+        return implode(' ', $blocks);
     }
 
     /**

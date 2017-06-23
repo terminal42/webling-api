@@ -2,7 +2,7 @@
 
 namespace Terminal42\WeblingApi\Query;
 
-class Parameter
+class Parameter implements BuildableInterface
 {
     /**
      * @var string
@@ -22,19 +22,23 @@ class Parameter
     /**
      * Constructor.
      *
-     * @param string $property
+     * @param string     $property
+     * @param Query|null $parent
      */
-    public function __construct($property)
+    public function __construct($property, Query $parent = null)
     {
         $this->property = $property;
+        $this->parent = $parent;
     }
 
     /**
      * Queries if property is *less than* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isLessThan($value)
     {
@@ -46,9 +50,11 @@ class Parameter
     /**
      * Queries if property is *less than or equal to* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isLessOrEqualThan($value)
     {
@@ -60,9 +66,11 @@ class Parameter
     /**
      * Queries if property is *greater than* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isGreaterThan($value)
     {
@@ -74,9 +82,11 @@ class Parameter
     /**
      * Queries if property is *greater than or equal to* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isGreaterOrEqualThan($value)
     {
@@ -88,9 +98,11 @@ class Parameter
     /**
      * Queries if property is *equal to* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isEqualTo($value)
     {
@@ -102,9 +114,11 @@ class Parameter
     /**
      * Queries if property is *not equal to* given value.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isNotEqualTo($value)
     {
@@ -120,6 +134,8 @@ class Parameter
      * @param string $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function like($value)
     {
@@ -132,9 +148,11 @@ class Parameter
      * Queries if property is *not equals* to given value.
      * Placeholders * (many characters) and ? (one character) are allowed.
      *
-     * @param string $value
+     * @param string|Parameter $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function notLike($value)
     {
@@ -147,27 +165,26 @@ class Parameter
      * Queries if property is *empty*.
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isEmpty()
     {
-        $this->query = sprintf(
-            '%s IS EMPTY',
-            $this->quoteProperty($this->property)
-        );
+        $this->setQuery('%s IS EMPTY', null);
 
         return $this->parent;
     }
 
     /**
      * Queries if property is *not empty*.
+     *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function isNotEmpty()
     {
-        $this->query = sprintf(
-            '%s IS NOT EMPTY',
-            $this->quoteProperty($this->property)
-        );
+        $this->setQuery('%s IS NOT EMPTY', null);
 
         return $this->parent;
     }
@@ -178,6 +195,8 @@ class Parameter
      * @param string[] $values
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function in(array $values)
     {
@@ -192,6 +211,8 @@ class Parameter
      * @param string[] $values
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function notIn(array $values)
     {
@@ -206,6 +227,8 @@ class Parameter
      * @param string $value
      *
      * @return Query
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     public function filter($value)
     {
@@ -215,11 +238,49 @@ class Parameter
     }
 
     /**
+     * Returns the property name.
+     *
+     * @return string
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * Gets the parent query.
+     *
+     * @return Query|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Sets the parent query.
+     *
      * @param Query $parent
      */
     public function setParent(Query $parent)
     {
         $this->parent = $parent;
+    }
+
+    /**
+     * Returns query string for property condition.
+     *
+     * @return string
+     *
+     * @throws \RuntimeException If the parameter does not have a query condition.
+     */
+    public function build()
+    {
+        if (empty($this->query)) {
+            throw new \RuntimeException(sprintf('Missing query condition for property "%s"', $this->property));
+        }
+
+        return (string) $this->query;
     }
 
     /**
@@ -233,29 +294,51 @@ class Parameter
     /**
      * Builds the query string based on the given operation.
      *
-     * @param string       $operation
-     * @param string|array $value
+     * @param string $operation
+     * @param mixed  $value
+     *
+     * @throws \RuntimeException If a query condition has already been configured on this parameter.
      */
     private function setQuery($operation, $value)
     {
-        $value = '"' . (is_array($value) ? implode('", "', $value) : $value) . '"';
+        if (null !== $this->query) {
+            throw new \RuntimeException(
+                sprintf('Query condition for property "%s" has already been set.', $this->property)
+            );
+        }
 
         $this->query = sprintf(
             $operation,
-            $this->quoteProperty($this->property),
-            $value
+            $this->escapeProperty($this->property),
+            $this->escapeValue($value)
         );
     }
 
     /**
-     * Add quotes to property name if it contains special characters.
+     * Escapes property name if it contains special characters.
      *
      * @param string $name
      *
      * @return string
      */
-    private function quoteProperty($name)
+    private function escapeProperty($name)
     {
         return preg_match('/^[a-z0-9,\*]+$/i', $name) ? $name : sprintf('`%s`', $name);
+    }
+
+    /**
+     * Escapes parameter value.
+     *
+     * @param mixed $value
+     *
+     * @return string
+     */
+    private function escapeValue($value)
+    {
+        if ($value instanceof Parameter) {
+            return $this->escapeProperty($value->getProperty());
+        }
+
+        return '"' . (is_array($value) ? implode('", "', $value) : $value) . '"';
     }
 }
