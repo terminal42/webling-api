@@ -8,6 +8,7 @@ use Terminal42\WeblingApi\Exception\HttpStatusException;
 use Terminal42\WeblingApi\Exception\NotFoundException;
 use Terminal42\WeblingApi\Exception\ParseException;
 use Terminal42\WeblingApi\Query\Query;
+use Terminal42\WeblingApi\Repository\RepositoryInterface;
 
 class EntityManager
 {
@@ -101,24 +102,23 @@ class EntityManager
     /**
      * Finds all entities for a given type.
      *
-     * @param string $type      The entity type
-     * @param Query  $query     A property query from the QueryBuilder
-     * @param string $sort      Sort the passed property
-     * @param string $direction Sort order (see RepositoryInterface constants)
+     * @param string $type  The entity type
+     * @param Query  $query A property query from the QueryBuilder
+     * @param array $order  A sorting array where key is property and value is direction (see constants).
      *
      * @return EntityList
      *
-     * @throws HttpStatusException If there was a problem with the request
-     * @throws ParseException      If the JSON data could not be parsed
-     * @throws NotFoundException   If the API returned a HTTP status code 404
-     * @throws ApiErrorException   If the API returned an error message
+     * @throws \InvalidArgumentException If the order contains invalid sorting directions.
+     * @throws HttpStatusException       If there was a problem with the request
+     * @throws ParseException            If the JSON data could not be parsed
+     * @throws NotFoundException         If the API returned a HTTP status code 404
+     * @throws ApiErrorException         If the API returned an error message
      */
-    public function findAll($type, Query $query = null, $sort = '', $direction = '')
+    public function findAll($type, Query $query = null, array $order = [])
     {
         $params = [
-            'query'     => (string) $query,
-            'sort'      => $sort,
-            'direction' => $direction
+            'filter'    => (string) $query,
+            'order'     => $this->prepareOrder($order),
         ];
 
         $data = $this->client->get("/$type", array_filter($params));
@@ -266,5 +266,30 @@ class EntityManager
     public static function createForAccount($subdomain, $apiKey)
     {
         return new static(new Client($subdomain, $apiKey, static::API_VERSION), new EntityFactory());
+    }
+
+    /**
+     * Validates an order config and converts to query string.
+     *
+     * @param array $order
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException If the order contains invalid sorting directions.
+     */
+    private function prepareOrder(array $order)
+    {
+        $invalidDirections = array_diff(
+            $order,
+            [RepositoryInterface::DIRECTION_ASC, RepositoryInterface::DIRECTION_DESC]
+        );
+
+        if (count($invalidDirections) > 0) {
+            throw new \InvalidArgumentException(
+                sprintf('Invalid sorting direction(s) "%s"', implode('", "', $invalidDirections))
+            );
+        }
+
+        return http_build_query($order, null, ', ');
     }
 }

@@ -7,9 +7,9 @@ use Terminal42\WeblingApi\EntityList;
 use Terminal42\WeblingApi\Query\Query;
 
 /**
- * @method EntityList|Membergroup[] findAll($sort = '', $direction = '')
+ * @method EntityList|Membergroup[] findAll(array $order = [])
  * @method Membergroup              findById($id)
- * @method EntityList|Membergroup[] findBy(Query $query, $sort = '', $direction = '')
+ * @method EntityList|Membergroup[] findBy(Query $query, array $order = [])
 
  */
 class MembergroupRepository extends AbstractRepository

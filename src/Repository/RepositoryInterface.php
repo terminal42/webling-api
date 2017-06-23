@@ -21,12 +21,11 @@ interface RepositoryInterface
     /**
      * Finds all entities of this type.
      *
-     * @param string $sort      Sort result by this property
-     * @param string $direction Sort order (see constants)
+     * @param array $order A sorting array where key is property and value is direction (see constants).
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findAll($sort = '', $direction = '');
+    public function findAll(array $order = []);
 
     /**
      * Find entity by ID.
@@ -40,11 +39,10 @@ interface RepositoryInterface
     /**
      * Find entities with given properties.
      *
-     * @param Query  $query     A property query from the QueryBuilder
-     * @param string $sort      Sort result by given property
-     * @param string $direction Sort order
+     * @param Query $query A property query from the QueryBuilder
+     * @param array $order A sorting array where key is property and value is direction (see constants).
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findBy(Query $query, $sort = '', $direction = '');
+    public function findBy(Query $query, array $order = []);
 }
