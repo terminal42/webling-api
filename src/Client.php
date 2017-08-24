@@ -2,9 +2,11 @@
 
 namespace Terminal42\WeblingApi;
 
-use GuzzleHttp\Exception\ParseException as GuzzleParseException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\ResponseInterface;
+use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\MessageFactoryDiscovery;
+use Http\Message\MessageFactory;
+use Psr\Http\Message\ResponseInterface;
 use Terminal42\WeblingApi\Exception\ApiErrorException;
 use Terminal42\WeblingApi\Exception\HttpStatusException;
 use Terminal42\WeblingApi\Exception\NotFoundException;
@@ -12,28 +14,47 @@ use Terminal42\WeblingApi\Exception\ParseException;
 
 class Client implements ClientInterface
 {
-    protected $client;
+    /**
+     * @var HttpClient|null
+     */
+    private $httpClient;
+
+    /**
+     * @var MessageFactory
+     */
+    private $requestFactory;
+
+    /**
+     * @var string
+     */
+    private $baseUri;
+
+    /**
+     * @var array
+     */
+    private $defaultQuery;
 
     /**
      * Constructor.
      *
-     * @param string $subdomain  Your Webling subdomain.
-     * @param string $apiKey     Your Webling API key.
-     * @param int    $apiVersion The API version
+     * @param string              $subdomain  Your Webling subdomain.
+     * @param string              $apiKey     Your Webling API key.
+     * @param int                 $apiVersion The API version
+     * @param HttpClient|null     $httpClient
+     * @param MessageFactory|null $messageFactory
      */
-    public function __construct($subdomain, $apiKey, $apiVersion)
-    {
-        $this->client = new \GuzzleHttp\Client(
-            [
-                'base_url' => [
-                    'https://{subdomain}.webling.ch/api/{version}/',
-                    ['subdomain' => $subdomain, 'version' => $apiVersion]
-                ],
-                'defaults' => [
-                    'query' => ['apikey' => $apiKey]
-                ]
-            ]
-        );
+    public function __construct(
+        $subdomain,
+        $apiKey,
+        $apiVersion,
+        HttpClient $httpClient = null,
+        MessageFactory $messageFactory = null
+    ) {
+        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
+        $this->requestFactory = $messageFactory ?: MessageFactoryDiscovery::find();
+
+        $this->baseUri = sprintf('https://%s.webling.ch/api/%s/', $subdomain, $apiVersion);
+        $this->defaultQuery = ['apikey' => $apiKey];
     }
 
     /**
@@ -42,16 +63,24 @@ class Client implements ClientInterface
     public function get($url, array $query = [])
     {
         try {
-            $response = $this->client->get(ltrim($url, '/'), ['query' => $query]);
+            $response = $this->httpClient->sendRequest(
+                $this->requestFactory->createRequest('GET', $this->buildUri($url, $query))
+            );
 
             if (200 !== $response->getStatusCode()) {
                 throw $this->convertResponseToException($response);
             }
 
-            return $response->json();
+            $json = @json_decode((string) $response->getBody(), true);
+
+            if (false === $json) {
+                throw new ParseException(json_last_error_msg(), json_last_error());
+            }
+
+            return $json;
 
         } catch (\Exception $e) {
-            throw $this->convertException($e);
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -61,13 +90,15 @@ class Client implements ClientInterface
     public function post($url, $json)
     {
         try {
-            $response = $this->client->post(ltrim($url, '/'), ['body' => $json]);
+            $response = $this->httpClient->sendRequest(
+                $this->requestFactory->createRequest('POST', $this->buildUri($url), [], $json)
+            );
 
             if (201 !== $response->getStatusCode()) {
                 throw $this->convertResponseToException($response);
             }
         } catch (\Exception $e) {
-            throw $this->convertException($e);
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -77,13 +108,15 @@ class Client implements ClientInterface
     public function put($url, $json)
     {
         try {
-            $response = $this->client->put(ltrim($url, '/'), ['body' => $json]);
+            $response = $this->httpClient->sendRequest(
+                $this->requestFactory->createRequest('PUT', $this->buildUri($url), [], $json)
+            );
 
             if (204 !== $response->getStatusCode()) {
                 throw $this->convertResponseToException($response);
             }
         } catch (\Exception $e) {
-            throw $this->convertException($e);
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -93,38 +126,16 @@ class Client implements ClientInterface
     public function delete($url)
     {
         try {
-            $response = $this->client->delete(ltrim($url, '/'));
+            $response = $this->httpClient->sendRequest(
+                $this->requestFactory->createRequest('DELETE', $this->buildUri($url))
+            );
 
             if (204 !== $response->getStatusCode()) {
                 throw $this->convertResponseToException($response);
             }
         } catch (\Exception $e) {
-            throw $this->convertException($e);
+            throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
-    }
-
-    /**
-     * Convert known Guzzle exceptions to our custom ones
-     *
-     * @param \Exception $e
-     *
-     * @return \Exception
-     */
-    protected function convertException(\Exception $e)
-    {
-        if ($e instanceof RequestException) {
-            if ($e->hasResponse()) {
-                return $this->convertResponseToException($e->getResponse(), $e);
-            }
-
-            return new HttpStatusException($e->getMessage(), $e->getCode(), $e);
-        }
-
-        if ($e instanceof GuzzleParseException) {
-            return new ParseException($e->getMessage(), $e->getCode(), $e);
-        }
-
-        return $e;
     }
 
     /**
@@ -148,5 +159,20 @@ class Client implements ClientInterface
         }
 
         return new ApiErrorException($body['error'], $response->getStatusCode(), $exception);
+    }
+
+    /**
+     * Builds an API request URI including authentication credentials.
+     *
+     * @param string $path
+     * @param array  $query
+     *
+     * @return string
+     */
+    private function buildUri($path, array $query = [])
+    {
+        $query = array_merge($this->defaultQuery, $query);
+
+        return $this->baseUri . ltrim($path, '/') . '?' . http_build_query($query);
     }
 }
