@@ -3,16 +3,21 @@
     "type": "library",
     "description": "API client for webling.ch",
     "license": "LGPL-3.0+",
-    "authors": [
-        {
-            "name": "terminal42 gmbh",
-            "homepage": "https://www.terminal42.ch/"
-        }
-    ],
+    "authors": [{
+        "name": "terminal42 gmbh",
+        "homepage": "https://www.terminal42.ch/"
+    }],
+    "funding": [{
+        "type": "github",
+        "url": "https://github.com/terminal42"
+    }, {
+        "type": "other",
+        "url": "https://ko-fi.com/terminal42"
+    }],
     "require": {
-        "php": "^7.1",
-        "symfony/console": "^2.6 || ^3.0 || ^4.0",
-        "symfony/filesystem": "^2.6 || ^3.0 || ^4.0",
+        "php": "^7.1 || ^8.0",
+        "symfony/console": "^2.6 || ^3.0 || ^4.0 || ^5.0",
+        "symfony/filesystem": "^2.6 || ^3.0 || ^4.0 || ^5.0",
 
         "psr/http-message": "^1.0",
         "php-http/client-implementation": "^1.0",
