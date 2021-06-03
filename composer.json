@@ -52,7 +52,7 @@
     "bin": ["bin/webling"],
     "extra": {
         "branch-alias": {
-            "dev-develop": "1.0.x-dev"
+            "dev-main": "2.0.x-dev"
         }
     },
     "scripts": {

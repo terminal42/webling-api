@@ -1,20 +1,18 @@
 # terminal42/webling-api
 
 An API client for the REST API of webling.ch.
-This client is currently used for our own projects and is not stable at all.
-It thus might be subject to heavy changes.
-If you're interested in moving to a stable release (version 1.0.0) so you can be
-sure there are no BC breaks until version 2.0.0 (semver), please feel free to
-get in touch with us.
+
+This client is currently used for our own projects and might not support all cases.
+Feel free to open issues or pull requests for questions or feature requests.
 
 
 ## Installation
 
 ```bash
-$ composer.phar require terminal42/webling-api ^1.0
+$ composer.phar require terminal42/webling-api ^2.0@dev
 ```
 
-If you are using Symfony, we recommend to use our [Webling Bundle](https://github.com/terminal42/webling-bundle).
+If you are using Symfony, we recommend using our [Webling Bundle](https://github.com/terminal42/webling-bundle).
 
 
 ## Usage
