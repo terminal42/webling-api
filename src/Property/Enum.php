@@ -41,24 +41,20 @@ abstract class Enum implements \JsonSerializable
         return (string) $this->value;
     }
 
-    public function getConstList(bool $include_default = false): array
+    public function jsonSerialize()
     {
-        static $constants;
+        return $this->value;
+    }
 
-        if (null === $constants) {
-            $class = new \ReflectionClass($this);
-            $constants = $class->getConstants();
-        }
+    public static function getConstList(bool $include_default = false): array
+    {
+        $class = new \ReflectionClass(static::class);
+        $constants = $class->getConstants();
 
         if (!$include_default && \array_key_exists('__default', $constants)) {
             return array_diff_key($constants, ['__default' => '']);
         }
 
         return $constants;
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->value;
     }
 }

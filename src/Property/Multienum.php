@@ -17,11 +17,11 @@ abstract class Multienum extends Enum
     public function __construct(array $initial_value = null)
     {
         if (null === $initial_value) {
-            $constants = $this->getConstList(true);
+            $constants = static::getConstList(true);
 
             $this->value = \array_key_exists('__default', $constants) ? $constants['__default'] : null;
         } else {
-            $constants = $this->getConstList();
+            $constants = static::getConstList();
             $diff = array_diff($initial_value, $constants);
 
             if (0 === \count($diff)) {
