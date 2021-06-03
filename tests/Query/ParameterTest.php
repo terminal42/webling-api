@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Test\Query;
 
 use PHPUnit\Framework\TestCase;
+use Terminal42\WeblingApi\Query\BuildableInterface;
 use Terminal42\WeblingApi\Query\Parameter;
 use Terminal42\WeblingApi\Query\Query;
 
 class ParameterTest extends TestCase
 {
-
     public function testInstantiation(): void
     {
         $parameter = new Parameter('foo');
 
-        static::assertInstanceOf('\Terminal42\WeblingApi\Query\Parameter', $parameter);
-        static::assertInstanceOf('\Terminal42\WeblingApi\Query\BuildableInterface', $parameter);
+        $this->assertInstanceOf(Parameter::class, $parameter);
+        $this->assertInstanceOf(BuildableInterface::class, $parameter);
     }
 
     public function testReturnsParent(): void
@@ -23,7 +25,7 @@ class ParameterTest extends TestCase
         $this->assertNull($parameter->getParent());
 
         $parameter = new Parameter('foo', new Query(new Parameter('bar')));
-        $this->assertInstanceOf('Terminal42\WeblingApi\Query\Query', $parameter->getParent());
+        $this->assertInstanceOf(Query::class, $parameter->getParent());
     }
 
     /**

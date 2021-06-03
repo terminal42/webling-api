@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\DefinitionAwareInterface;
@@ -11,18 +13,15 @@ class EntityFactory implements EntityFactoryInterface
      * @var EntityInterface[]
      */
     protected static $classes = [
-        'member'        => 'Terminal42\\WeblingApi\\Entity\\Member',
-        'membergroup'   => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
-        'article'       => 'Terminal42\\WeblingApi\\Entity\\Article',
-        'articlegroup'  => 'Terminal42\\WeblingApi\\Entity\\Articlegroup',
-        'document'      => 'Terminal42\\WeblingApi\\Entity\\Document',
+        'member' => 'Terminal42\\WeblingApi\\Entity\\Member',
+        'membergroup' => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
+        'article' => 'Terminal42\\WeblingApi\\Entity\\Article',
+        'articlegroup' => 'Terminal42\\WeblingApi\\Entity\\Articlegroup',
+        'document' => 'Terminal42\\WeblingApi\\Entity\\Document',
         'documentgroup' => 'Terminal42\\WeblingApi\\Entity\\Documentgroup',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function create(EntityManager $manager, array $data, $id = null)
+    public function create(EntityManager $manager, array $data, int $id = null): EntityInterface
     {
         $class = static::$classes[$data['type']];
 
@@ -49,10 +48,7 @@ class EntityFactory implements EntityFactoryInterface
         return $entity;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($type)
+    public function supports(string $type): bool
     {
         return isset(static::$classes[$type]);
     }

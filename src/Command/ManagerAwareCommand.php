@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -18,10 +20,7 @@ abstract class ManagerAwareCommand extends Command
      */
     protected $manager;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         if (null === $this->manager) {
             /** @var QuestionHelper $helper */

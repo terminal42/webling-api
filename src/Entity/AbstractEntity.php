@@ -1,105 +1,102 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Entity;
 
 use Terminal42\WeblingApi\EntityList;
 
 abstract class AbstractEntity implements EntityInterface
 {
+    /**
+     * @var int|null
+     */
     protected $id;
-    protected $readonly;
-    protected $properties;
-    protected $children;
-    protected $parents;
-    protected $links;
-
-    public function __construct(
-        $id = null,
-        $readonly = false,
-        array $properties = [],
-        array $children = [],
-        EntityList $parents = null,
-        EntityList $links = null
-    ) {
-        $this->id         = $id;
-        $this->readonly   = (bool) $readonly;
-        $this->properties = $properties;
-        $this->children   = $children;
-        $this->parents    = $parents;
-        $this->links      = $links;
-    }
 
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    public function getId()
+    protected $readonly;
+
+    /**
+     * @var array
+     */
+    protected $properties;
+
+    /**
+     * @var array
+     */
+    protected $children;
+
+    /**
+     * @var EntityList|null
+     */
+    protected $parents;
+
+    /**
+     * @var EntityList|null
+     */
+    protected $links;
+
+    public function __construct(int $id = null, bool $readonly = false, array $properties = [], array $children = [], EntityList $parents = null, EntityList $links = null)
+    {
+        $this->id = $id;
+        $this->readonly = (bool) $readonly;
+        $this->properties = $properties;
+        $this->children = $children;
+        $this->parents = $parents;
+        $this->links = $links;
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
+    public function setId(int $id): EntityInterface
     {
-        $this->id = (int) $id;
+        $this->id = $id;
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function unsetId()
+    public function unsetId(): EntityInterface
     {
         $this->id = null;
+
+        return $this;
     }
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return $this->readonly;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProperties(array $properties)
+    public function setProperties(array $properties): EntityInterface
     {
         $this->properties = $properties;
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProperty($name)
+    public function getProperty(string $name)
     {
         return $this->properties[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProperty($name, $value)
+    public function setProperty(string $name, $value): EntityInterface
     {
         $this->properties[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getChildren($type)
+    public function getChildren(string $type): ?EntityList
     {
         if (!isset($this->children[$type])) {
             return null;
@@ -108,53 +105,38 @@ abstract class AbstractEntity implements EntityInterface
         return $this->children[$type];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParents()
+    public function getParents(): ?EntityList
     {
         return $this->parents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setParents(EntityList $parents)
+    public function setParents(EntityList $parents): EntityInterface
     {
         $this->parents = $parents;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLinks()
+    public function getLinks(): ?EntityList
     {
         return $this->links;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setLinks(EntityList $links)
+    public function setLinks(EntityList $links): EntityInterface
     {
         $this->links = $links;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function serialize()
+    public function jsonSerialize()
     {
         $data = [
-            'type'       => $this->getType(),
-            'readonly'   => (int) $this->isReadonly(),
+            'type' => $this->getType(),
+            'readonly' => (int) $this->isReadonly(),
             'properties' => $this->getProperties(),
-            'parents'    => $this->getParents() ? $this->getParents()->getIds() : [],
-            'links'      => $this->getLinks() ? $this->getLinks()->getIds() : []
+            'parents' => $this->getParents() ? $this->getParents()->getIds() : [],
+            'links' => $this->getLinks() ? $this->getLinks()->getIds() : [],
         ];
 
         return json_encode($data);

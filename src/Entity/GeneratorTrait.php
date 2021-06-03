@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Entity;
 
 use Terminal42\WeblingApi\Property\Date;
@@ -14,7 +16,7 @@ trait GeneratorTrait
      */
     private $definition;
 
-    public function setDefinition(array $definition)
+    public function setDefinition(array $definition): void
     {
         $this->definition = $definition;
     }

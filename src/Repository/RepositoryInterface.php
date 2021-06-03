@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Repository;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
@@ -8,41 +10,37 @@ use Terminal42\WeblingApi\Query\Query;
 
 interface RepositoryInterface
 {
-    const DIRECTION_ASC  = 'ASC';
-    const DIRECTION_DESC = 'DESC';
+    public const DIRECTION_ASC = 'ASC';
+    public const DIRECTION_DESC = 'DESC';
 
     /**
      * Gets the entity type for this repository.
-     *
-     * @return string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Finds all entities of this type.
      *
-     * @param array $order A sorting array where key is property and value is direction (see constants).
+     * @param array $order a sorting array where key is property and value is direction (see constants)
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findAll(array $order = []);
+    public function findAll(array $order = []): EntityList;
 
     /**
      * Find entity by ID.
      *
      * @param int $id The entity ID
-     *
-     * @return EntityInterface
      */
-    public function findById($id);
+    public function findById(int $id): EntityInterface;
 
     /**
      * Find entities with given properties.
      *
      * @param Query $query A property query from the QueryBuilder
-     * @param array $order A sorting array where key is property and value is direction (see constants).
+     * @param array $order a sorting array where key is property and value is direction (see constants)
      *
      * @return EntityList|EntityInterface[]
      */
-    public function findBy(Query $query, array $order = []);
+    public function findBy(Query $query, array $order = []): EntityList;
 }

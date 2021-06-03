@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Property;
 
 class Image extends File
@@ -13,17 +15,11 @@ class Image extends File
         $this->dimensions = $dimensions;
     }
 
-    /**
-     * @return array
-     */
-    public function getDimensions()
+    public function getDimensions(): array
     {
         return $this->dimensions;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize();

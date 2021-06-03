@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Entity;
 
 class Membergroup extends AbstractEntity
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
+    public function getType(): string
     {
         return 'membergroup';
     }

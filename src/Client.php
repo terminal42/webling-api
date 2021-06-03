@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi;
 
 use Http\Client\HttpClient;
@@ -34,22 +36,8 @@ class Client implements ClientInterface
      */
     private $defaultQuery;
 
-    /**
-     * Constructor.
-     *
-     * @param string              $subdomain  Your Webling subdomain.
-     * @param string              $apiKey     Your Webling API key.
-     * @param int                 $apiVersion The API version
-     * @param HttpClient|null     $httpClient
-     * @param MessageFactory|null $messageFactory
-     */
-    public function __construct(
-        $subdomain,
-        $apiKey,
-        $apiVersion,
-        HttpClient $httpClient = null,
-        MessageFactory $messageFactory = null
-    ) {
+    public function __construct(string $subdomain, string $apiKey, int $apiVersion, HttpClient $httpClient = null, MessageFactory $messageFactory = null)
+    {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $messageFactory ?: MessageFactoryDiscovery::find();
 
@@ -57,10 +45,7 @@ class Client implements ClientInterface
         $this->defaultQuery = ['apikey' => $apiKey];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($url, array $query = [])
+    public function get(string $url, array $query = [])
     {
         try {
             $response = $this->httpClient->sendRequest(
@@ -78,16 +63,12 @@ class Client implements ClientInterface
             }
 
             return $json;
-
         } catch (\Exception $e) {
             throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function post($url, $json)
+    public function post(string $url, string $json): void
     {
         try {
             $response = $this->httpClient->sendRequest(
@@ -102,10 +83,7 @@ class Client implements ClientInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function put($url, $json)
+    public function put(string $url, string $json): void
     {
         try {
             $response = $this->httpClient->sendRequest(
@@ -120,10 +98,7 @@ class Client implements ClientInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($url)
+    public function delete(string $url): void
     {
         try {
             $response = $this->httpClient->sendRequest(
@@ -141,16 +116,13 @@ class Client implements ClientInterface
     /**
      * Convert a Guzzle Response to an exception. Useful if status code is not as expected.
      *
-     * @param ResponseInterface $response
-     * @param \Exception|null   $exception
-     *
      * @return \RuntimeException
      */
     protected function convertResponseToException(ResponseInterface $response, \Exception $exception = null)
     {
-        $body = @json_decode($response->getBody(), true);
+        $body = @json_decode((string) $response->getBody(), true);
 
-        if (!is_array($body) || empty($body['error'])) {
+        if (!\is_array($body) || empty($body['error'])) {
             return new HttpStatusException($response->getBody(), $response->getStatusCode(), $exception);
         }
 
@@ -165,7 +137,6 @@ class Client implements ClientInterface
      * Builds an API request URI including authentication credentials.
      *
      * @param string $path
-     * @param array  $query
      *
      * @return string
      */
@@ -173,6 +144,6 @@ class Client implements ClientInterface
     {
         $query = array_merge($this->defaultQuery, $query);
 
-        return $this->baseUri . ltrim($path, '/') . '?' . http_build_query($query);
+        return $this->baseUri.ltrim($path, '/').'?'.http_build_query($query);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Query;
 
 class Parameter implements BuildableInterface
@@ -19,16 +21,15 @@ class Parameter implements BuildableInterface
      */
     private $parent;
 
-    /**
-     * Constructor.
-     *
-     * @param string     $property
-     * @param Query|null $parent
-     */
-    public function __construct($property, Query $parent = null)
+    public function __construct(string $property, Query $parent = null)
     {
         $this->property = $property;
         $this->parent = $parent;
+    }
+
+    public function __toString(): string
+    {
+        return $this->query;
     }
 
     /**
@@ -36,11 +37,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isLessThan($value)
+    public function isLessThan($value): ?Query
     {
         $this->setQuery('%s < %s', $value);
 
@@ -52,11 +51,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isLessOrEqualThan($value)
+    public function isLessOrEqualThan($value): ?Query
     {
         $this->setQuery('%s <= %s', $value);
 
@@ -68,11 +65,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isGreaterThan($value)
+    public function isGreaterThan($value): ?Query
     {
         $this->setQuery('%s > %s', $value);
 
@@ -84,11 +79,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isGreaterOrEqualThan($value)
+    public function isGreaterOrEqualThan($value): ?Query
     {
         $this->setQuery('%s >= %s', $value);
 
@@ -100,11 +93,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isEqualTo($value)
+    public function isEqualTo($value): ?Query
     {
         $this->setQuery('%s = %s', $value);
 
@@ -116,11 +107,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isNotEqualTo($value)
+    public function isNotEqualTo($value): ?Query
     {
         $this->setQuery('%s != %s', $value);
 
@@ -133,11 +122,9 @@ class Parameter implements BuildableInterface
      *
      * @param string $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function like($value)
+    public function like($value): ?Query
     {
         $this->setQuery('%s LIKE %s', $value);
 
@@ -150,11 +137,9 @@ class Parameter implements BuildableInterface
      *
      * @param string|Parameter $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function notLike($value)
+    public function notLike($value): ?Query
     {
         $this->setQuery('NOT (%s LIKE %s)', $value);
 
@@ -164,11 +149,9 @@ class Parameter implements BuildableInterface
     /**
      * Queries if property is *empty*.
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isEmpty()
+    public function isEmpty(): ?Query
     {
         $this->setQuery('%s IS EMPTY', null);
 
@@ -178,11 +161,9 @@ class Parameter implements BuildableInterface
     /**
      * Queries if property is *not empty*.
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function isNotEmpty()
+    public function isNotEmpty(): ?Query
     {
         $this->setQuery('NOT (%s IS EMPTY)', null);
 
@@ -192,13 +173,11 @@ class Parameter implements BuildableInterface
     /**
      * Queries if property value is *one of given options*.
      *
-     * @param string[] $values
+     * @param array<string> $values
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function in(array $values)
+    public function in(array $values): ?Query
     {
         $this->setQuery('%s IN (%s)', $values);
 
@@ -208,13 +187,11 @@ class Parameter implements BuildableInterface
     /**
      * Queries if property value is *not one of given options*.
      *
-     * @param string[] $values
+     * @param array<string> $values
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function notIn(array $values)
+    public function notIn(array $values): ?Query
     {
         $this->setQuery('NOT (%s IN (%s))', $values);
 
@@ -226,11 +203,9 @@ class Parameter implements BuildableInterface
      *
      * @param string $value
      *
-     * @return Query
-     *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function filter($value)
+    public function filter($value): ?Query
     {
         $this->setQuery('%s FILTER %s', $value);
 
@@ -239,30 +214,24 @@ class Parameter implements BuildableInterface
 
     /**
      * Returns the property name.
-     *
-     * @return string
      */
-    public function getProperty()
+    public function getProperty(): string
     {
         return $this->property;
     }
 
     /**
      * Gets the parent query.
-     *
-     * @return Query|null
      */
-    public function getParent()
+    public function getParent(): ?Query
     {
         return $this->parent;
     }
 
     /**
      * Sets the parent query.
-     *
-     * @param Query $parent
      */
-    public function setParent(Query $parent)
+    public function setParent(Query $parent): void
     {
         $this->parent = $parent;
     }
@@ -270,41 +239,28 @@ class Parameter implements BuildableInterface
     /**
      * Returns query string for property condition.
      *
-     * @return string
-     *
-     * @throws \RuntimeException If the parameter does not have a query condition.
+     * @throws \RuntimeException if the parameter does not have a query condition
      */
-    public function build()
+    public function build(): string
     {
         if (empty($this->query)) {
             throw new \RuntimeException(sprintf('Missing query condition for property "%s"', $this->property));
         }
 
-        return (string) $this->query;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->query;
+        return $this->query;
     }
 
     /**
      * Builds the query string based on the given operation.
      *
-     * @param string $operation
-     * @param mixed  $value
+     * @param mixed $value
      *
-     * @throws \RuntimeException If a query condition has already been configured on this parameter.
+     * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    private function setQuery($operation, $value)
+    private function setQuery(string $operation, $value): void
     {
         if (null !== $this->query) {
-            throw new \RuntimeException(
-                sprintf('Query condition for property "%s" has already been set.', $this->property)
-            );
+            throw new \RuntimeException(sprintf('Query condition for property "%s" has already been set.', $this->property));
         }
 
         $this->query = sprintf(
@@ -316,29 +272,23 @@ class Parameter implements BuildableInterface
 
     /**
      * Escapes property name if it contains special characters.
-     *
-     * @param string $name
-     *
-     * @return string
      */
-    private function escapeProperty($name)
+    private function escapeProperty(string $name): string
     {
-        return preg_match('/^[a-z0-9,\*]+$/i', $name) ? $name : sprintf('`%s`', $name);
+        return preg_match('/^[a-z0-9,*]+$/i', $name) ? $name : sprintf('`%s`', $name);
     }
 
     /**
      * Escapes parameter value.
      *
      * @param mixed $value
-     *
-     * @return string
      */
-    private function escapeValue($value)
+    private function escapeValue($value): string
     {
-        if ($value instanceof Parameter) {
+        if ($value instanceof self) {
             return $this->escapeProperty($value->getProperty());
         }
 
-        return '"' . (is_array($value) ? implode('", "', $value) : $value) . '"';
+        return '"'.(\is_array($value) ? implode('", "', $value) : $value).'"';
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
@@ -30,57 +32,39 @@ class EntityList implements \Iterator, \Countable
      */
     public function __construct($type, array $ids, EntityManager $manager)
     {
-        $this->type    = $type;
-        $this->ids     = $ids;
+        $this->type = $type;
+        $this->ids = $ids;
         $this->manager = $manager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function current()
     {
         return $this->manager->find($this->type, current($this->ids));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function next()
+    public function next(): void
     {
         next($this->ids);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function key()
     {
         return current($this->ids);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function valid()
+    public function valid(): bool
     {
-        return (false !== current($this->ids));
+        return false !== current($this->ids);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->ids);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
+    public function count(): int
     {
-        return count($this->ids);
+        return \count($this->ids);
     }
 
     /**
@@ -93,12 +77,8 @@ class EntityList implements \Iterator, \Countable
 
     /**
      * Adds an entity to the list.
-     *
-     * @param EntityInterface $entity
-     *
-     * @return $this
      */
-    public function add(EntityInterface $entity)
+    public function add(EntityInterface $entity): self
     {
         if ($this->type !== $entity->getType()) {
             throw new \InvalidArgumentException('Entity type does not match entity list.');
@@ -110,7 +90,7 @@ class EntityList implements \Iterator, \Countable
             throw new \InvalidArgumentException('The entity must have an ID.');
         }
 
-        if (!in_array($id, $this->ids, false)) {
+        if (!\in_array($id, $this->ids, false)) {
             $this->ids[] = $id;
         }
 

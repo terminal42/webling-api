@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Repository;
 
 use Terminal42\WeblingApi\Entity\Documentgroup;
@@ -13,10 +15,7 @@ use Terminal42\WeblingApi\Query\Query;
  */
 class DocumentgroupRepository extends AbstractRepository
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
+    public function getType(): string
     {
         return 'documentgroup';
     }

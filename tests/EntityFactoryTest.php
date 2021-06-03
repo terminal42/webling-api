@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Test;
 
 use PHPUnit\Framework\TestCase;
@@ -11,12 +13,12 @@ class EntityFactoryTest extends TestCase
     {
         $factory = new EntityFactory();
 
-        static::assertTrue($factory->supports('member'));
-        static::assertTrue($factory->supports('membergroup'));
-        static::assertTrue($factory->supports('article'));
-        static::assertTrue($factory->supports('articlegroup'));
-        static::assertTrue($factory->supports('document'));
-        static::assertTrue($factory->supports('documentgroup'));
-        static::assertFalse($factory->supports('foo'));
+        $this->assertTrue($factory->supports('member'));
+        $this->assertTrue($factory->supports('membergroup'));
+        $this->assertTrue($factory->supports('article'));
+        $this->assertTrue($factory->supports('articlegroup'));
+        $this->assertTrue($factory->supports('document'));
+        $this->assertTrue($factory->supports('documentgroup'));
+        $this->assertFalse($factory->supports('foo'));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Query;
 
 class Query implements BuildableInterface
@@ -21,12 +23,12 @@ class Query implements BuildableInterface
         $this->blocks[] = $block;
     }
 
-    /**
-     * @param string $property
-     *
-     * @return Parameter
-     */
-    public function andWhere($property)
+    public function __toString(): string
+    {
+        return $this->build();
+    }
+
+    public function andWhere(string $property): Parameter
     {
         $parameter = new Parameter($property, $this);
 
@@ -36,12 +38,7 @@ class Query implements BuildableInterface
         return $parameter;
     }
 
-    /**
-     * @param string $property
-     *
-     * @return Parameter
-     */
-    public function orWhere($property)
+    public function orWhere(string $property): Parameter
     {
         $parameter = new Parameter($property, $this);
 
@@ -51,7 +48,7 @@ class Query implements BuildableInterface
         return $parameter;
     }
 
-    public function andGroup(Query $group)
+    public function andGroup(self $group): self
     {
         $this->blocks[] = 'AND';
         $this->blocks[] = $group;
@@ -61,7 +58,7 @@ class Query implements BuildableInterface
         return $this;
     }
 
-    public function orGroup(Query $group)
+    public function orGroup(self $group): self
     {
         $this->blocks[] = 'OR';
         $this->blocks[] = $group;
@@ -71,18 +68,15 @@ class Query implements BuildableInterface
         return $this;
     }
 
-    public function setParent(Query $parent)
+    public function setParent(self $parent): void
     {
         $this->parent = $parent;
     }
 
-    /**
-     * @return string
-     */
-    public function build()
+    public function build(): string
     {
         $blocks = array_map(
-            function ($block) {
+            static function ($block) {
                 if ($block instanceof BuildableInterface) {
                     return $block->build();
                 }
@@ -93,17 +87,9 @@ class Query implements BuildableInterface
         );
 
         if (null !== $this->parent) {
-            return '(' . implode(' ', $blocks) . ')';
+            return '('.implode(' ', $blocks).')';
         }
 
         return implode(' ', $blocks);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->build();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Test;
 
 use PHPUnit\Framework\TestCase;
@@ -19,8 +21,8 @@ class ChangesTest extends TestCase
         $this->changes = new Changes(
             1,
             [
-                'objects'      => [
-                    'member'      => [
+                'objects' => [
+                    'member' => [
                         469,
                         492,
                     ],
@@ -28,17 +30,17 @@ class ChangesTest extends TestCase
                         554,
                         552,
                     ],
-                    'debitor'     => [
+                    'debitor' => [
                         848,
                     ],
                 ],
-                'context'      => [],
-                'definitions'  => [],
-                'settings'     => false,
-                'quota'        => true,
+                'context' => [],
+                'definitions' => [],
+                'settings' => false,
+                'quota' => true,
                 'subscription' => false,
-                'revision'     => 1530,
-                'version'      => 720,
+                'revision' => 1530,
+                'version' => 720,
             ],
             $this->createMock(EntityManager::class)
         );
@@ -59,6 +61,6 @@ class ChangesTest extends TestCase
         $entities = $this->changes->getEntities('member');
 
         $this->assertInstanceOf(EntityList::class, $entities);
-        $this->assertEquals([469,492], $entities->getIds());
+        $this->assertSame([469, 492], $entities->getIds());
     }
 }

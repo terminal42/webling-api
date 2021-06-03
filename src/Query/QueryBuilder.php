@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Query;
 
 class QueryBuilder
@@ -12,19 +14,14 @@ class QueryBuilder
     public function where($property)
     {
         $parameter = new Parameter($property);
-        $group     = new Query($parameter);
+        $group = new Query($parameter);
 
         $parameter->setParent($group);
 
         return $parameter;
     }
 
-    /**
-     * @param Query $group
-     *
-     * @return Query
-     */
-    public function group(Query $group)
+    public function group(Query $group): Query
     {
         $parentGroup = new Query($group);
 

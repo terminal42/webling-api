@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Property;
 
 class File implements \JsonSerializable
@@ -12,64 +14,46 @@ class File implements \JsonSerializable
 
     public function __construct($href, $size, $ext, $mime, Timestamp $timestamp)
     {
-        $this->href      = $href;
-        $this->size      = $size;
-        $this->ext       = $ext;
-        $this->mime      = $mime;
+        $this->href = $href;
+        $this->size = $size;
+        $this->ext = $ext;
+        $this->mime = $mime;
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * @return string
-     */
-    public function getHref()
+    public function getHref(): string
     {
         return $this->href;
     }
 
-    /**
-     * @return int
-     */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
 
-    /**
-     * @return string
-     */
-    public function getExt()
+    public function getExt(): string
     {
         return $this->ext;
     }
 
-    /**
-     * @return string
-     */
-    public function getMime()
+    public function getMime(): string
     {
         return $this->mime;
     }
 
-    /**
-     * @return Timestamp
-     */
-    public function getTimestamp()
+    public function getTimestamp(): Timestamp
     {
         return $this->timestamp;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function jsonSerialize()
     {
         return [
-            'href'      => $this->href,
-            'size'      => $this->size,
-            'ext'       => $this->ext,
-            'mime'      => $this->mime,
-            'timestamp' => $this->timestamp->jsonSerialize(),
+            'href' => $this->href,
+            'size' => $this->size,
+            'ext' => $this->ext,
+            'mime' => $this->mime,
+            'timestamp' => (string) $this->timestamp,
         ];
     }
 }

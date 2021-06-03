@@ -1,128 +1,84 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Entity;
 
 use Terminal42\WeblingApi\EntityList;
 
-interface EntityInterface
+interface EntityInterface extends \JsonSerializable
 {
     /**
      * Gets the entity type.
-     *
-     * @return string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Return whether the entity is read-only.
-     *
-     * @return bool
      */
-    public function isReadonly();
+    public function isReadonly(): bool;
 
     /**
      * Gets the entity ID.
-     *
-     * @return int
      */
-    public function getId();
+    public function getId(): ?int;
 
     /**
      * Sets the entity ID.
-     *
-     * @param int $id
-     *
-     * @return $this
      */
-    public function setId($id);
+    public function setId(int $id): self;
 
     /**
      * Unsets the entity ID.
-     *
-     * @return $this
      */
-    public function unsetId();
+    public function unsetId(): self;
 
     /**
      * Gets all entity properties.
-     *
-     * @return array
      */
-    public function getProperties();
+    public function getProperties(): array;
 
     /**
-     * Sets all entity properties
-     *
-     * @param array $properties
-     *
-     * @return $this
+     * Sets all entity properties.
      */
-    public function setProperties(array $properties);
+    public function setProperties(array $properties): self;
 
     /**
      * Gets an entity property by name.
      *
-     * @param string $name The property name
-     *
      * @return mixed
      */
-    public function getProperty($name);
+    public function getProperty(string $name);
 
     /**
      * Sets a entity property by name.
      *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return $this
+     * @param mixed $value
      */
-    public function setProperty($name, $value);
+    public function setProperty(string $name, $value): self;
 
     /**
      * Gets the entity children.
-     *
-     * @param string $type An entity type.
-     *
-     * @return EntityList|null
      */
-    public function getChildren($type);
+    public function getChildren(string $type): ?EntityList;
 
     /**
      * Gets the entity parents.
-     *
-     * @return EntityList|null
      */
-    public function getParents();
+    public function getParents(): ?EntityList;
 
     /**
      * Sets the entity parents.
-     *
-     * @param EntityList $parents
-     *
-     * @return $this
      */
-    public function setParents(EntityList $parents);
+    public function setParents(EntityList $parents): self;
 
     /**
      * Gets the linked entities.
-     *
-     * @return EntityList|null
      */
-    public function getLinks();
+    public function getLinks(): ?EntityList;
 
     /**
      * Sets the linked entities.
-     *
-     * @param EntityList $links
-     *
-     * @return $this
      */
-    public function setLinks(EntityList $links);
-
-    /**
-     * Returns a JSON representation of the entity.
-     *
-     * @return string
-     */
-    public function serialize();
+    public function setLinks(EntityList $links): self;
 }

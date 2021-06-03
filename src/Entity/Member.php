@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Entity;
 
 class Member extends AbstractEntity
 {
-    const IMAGE_ORIGINAL = 'original';
-    const IMAGE_THUMB    = 'thumb';
-    const IMAGE_MINI     = 'mini';
+    public const IMAGE_ORIGINAL = 'original';
+    public const IMAGE_THUMB = 'thumb';
+    public const IMAGE_MINI = 'mini';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
+    public function getType(): string
     {
         return 'member';
     }
@@ -19,7 +18,7 @@ class Member extends AbstractEntity
     /**
      * @internal not yet implemented
      */
-    public function getImage($property, $size = self::IMAGE_ORIGINAL)
+    public function getImage($property, $size = self::IMAGE_ORIGINAL): void
     {
         // TODO: implement method
     }
@@ -27,7 +26,7 @@ class Member extends AbstractEntity
     /**
      * @internal not yet implemented
      */
-    public function getFile($property)
+    public function getFile($property): void
     {
         // TODO: implement method
     }

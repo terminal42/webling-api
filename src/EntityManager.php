@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
@@ -12,8 +14,8 @@ use Terminal42\WeblingApi\Repository\RepositoryInterface;
 
 class EntityManager
 {
-    const API_VERSION = 1;
-    const API_REVISION = 82;
+    public const API_VERSION = 1;
+    public const API_REVISION = 82;
 
     /**
      * @var ClientInterface
@@ -38,24 +40,24 @@ class EntityManager
     /**
      * Constructor.
      *
-     * @param ClientInterface        $client  The HTTP client to make requests to the server.
-     * @param EntityFactoryInterface $factory A factory capable of creating entities.
+     * @param ClientInterface        $client  the HTTP client to make requests to the server
+     * @param EntityFactoryInterface $factory a factory capable of creating entities
      */
     public function __construct(ClientInterface $client, EntityFactoryInterface $factory)
     {
-        $this->client  = $client;
+        $this->client = $client;
         $this->factory = $factory;
     }
 
     /**
-     * Returns the definition of entities
-     *
-     * @return array
+     * Returns the definition of entities.
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      * @throws NotFoundException   If the API returned a HTTP status code 404
      * @throws ApiErrorException   If the API returned an error message
+     *
+     * @return array
      */
     public function getDefinition()
     {
@@ -80,14 +82,10 @@ class EntityManager
 
     /**
      * Returns the changeset for latest revision compared to given ID.
-     *
-     * @param int $revisionId
-     *
-     * @return Changes
      */
-    public function getChanges($revisionId)
+    public function getChanges(int $revisionId): Changes
     {
-        return new Changes($revisionId, $this->client->get('/replicate/' . (int) $revisionId), $this);
+        return new Changes($revisionId, $this->client->get('/replicate/'.(int) $revisionId), $this);
     }
 
     /**
@@ -105,21 +103,21 @@ class EntityManager
      *
      * @param string $type  The entity type
      * @param Query  $query A property query from the QueryBuilder
-     * @param array $order  A sorting array where key is property and value is direction (see constants).
+     * @param array  $order a sorting array where key is property and value is direction (see constants)
      *
-     * @return EntityList
-     *
-     * @throws \InvalidArgumentException If the order contains invalid sorting directions.
+     * @throws \InvalidArgumentException if the order contains invalid sorting directions
      * @throws HttpStatusException       If there was a problem with the request
      * @throws ParseException            If the JSON data could not be parsed
      * @throws NotFoundException         If the API returned a HTTP status code 404
      * @throws ApiErrorException         If the API returned an error message
+     *
+     * @return EntityList
      */
     public function findAll($type, Query $query = null, array $order = [])
     {
         $params = [
-            'filter'    => (string) $query,
-            'order'     => $this->prepareOrder($order),
+            'filter' => (string) $query,
+            'order' => $this->prepareOrder($order),
         ];
 
         $data = $this->client->get("/$type", array_filter($params));
@@ -130,20 +128,17 @@ class EntityManager
     /**
      * Find an entity by ID of given type.
      *
-     * @param string $type The entity type
-     * @param int    $id   The entity ID
-     *
-     * @return mixed
-     *
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      * @throws NotFoundException   If the API returned a HTTP status code 404
      * @throws ApiErrorException   If the API returned an error message
+     *
+     * @return mixed
      */
-    public function find($type, $id)
+    public function find(string $type, int $id): EntityInterface
     {
         if (!isset($this->entities[$type][$id])) {
-            $data   = $this->client->get("/$type/$id");
+            $data = $this->client->get("/$type/$id");
             $entity = $this->factory->create($this, $data, $id);
 
             $this->entities[$type][$id] = $entity;
@@ -155,14 +150,12 @@ class EntityManager
     /**
      * Add or update the entity in Webling.
      *
-     * @param EntityInterface $entity
-     *
      * @throws \InvalidArgumentException If the entity is readonly
      * @throws HttpStatusException       If there was a problem with the request
      * @throws NotFoundException         If the API returned a HTTP status code 404
      * @throws ApiErrorException         If the API returned an error message
      */
-    public function persist(EntityInterface $entity)
+    public function persist(EntityInterface $entity): void
     {
         if ($entity->isReadonly()) {
             throw new \InvalidArgumentException('The entity must not be readonly.');
@@ -180,15 +173,13 @@ class EntityManager
     /**
      * Delete entity from Webling.
      *
-     * @param EntityInterface $entity
-     *
      * @throws \UnexpectedValueException If the entity does not have an ID
      * @throws \InvalidArgumentException If the entity is readonly
      * @throws HttpStatusException       If there was a problem with the request
      * @throws NotFoundException         If the API returned a HTTP status code 404
      * @throws ApiErrorException         If the API returned an error message
      */
-    public function remove(EntityInterface $entity)
+    public function remove(EntityInterface $entity): void
     {
         $this->validateHasId($entity);
 
@@ -196,7 +187,7 @@ class EntityManager
             throw new \InvalidArgumentException('The entity must not be readonly.');
         }
 
-        $id   = $entity->getId();
+        $id = $entity->getId();
         $type = $entity->getType();
 
         $this->client->delete("/$type/$id");
@@ -206,18 +197,24 @@ class EntityManager
     }
 
     /**
+     * Creates a new entity manager for the given Webling account.
+     */
+    public static function createForAccount(string $subdomain, string $apiKey): self
+    {
+        return new static(new Client($subdomain, $apiKey, static::API_VERSION), new EntityFactory());
+    }
+
+    /**
      * Creates an entity in Webling.
-     *
-     * @param EntityInterface $entity
      *
      * @throws HttpStatusException If there was a problem with the request
      * @throws NotFoundException   If the API returned a HTTP status code 404
      * @throws ApiErrorException   If the API returned an error message
      */
-    private function create(EntityInterface $entity)
+    private function create(EntityInterface $entity): void
     {
         $type = $entity->getType();
-        $data = $entity->serialize();
+        $data = json_encode($entity);
 
         $result = $this->client->post("/$type", $data);
 
@@ -227,17 +224,15 @@ class EntityManager
     /**
      * Updates an entity in Webling.
      *
-     * @param EntityInterface $entity
-     *
      * @throws HttpStatusException If there was a problem with the request
      * @throws NotFoundException   If the API returned a HTTP status code 404
      * @throws ApiErrorException   If the API returned an error message
      */
-    private function update(EntityInterface $entity)
+    private function update(EntityInterface $entity): void
     {
-        $id   = $entity->getId();
+        $id = $entity->getId();
         $type = $entity->getType();
-        $data = $entity->serialize();
+        $data = json_encode($entity);
 
         $this->client->put("/$type/$id", $data);
     }
@@ -245,11 +240,9 @@ class EntityManager
     /**
      * Throws exception if entity does not have an ID.
      *
-     * @param EntityInterface $entity
-     *
      * @throws \UnexpectedValueException
      */
-    private function validateHasId(EntityInterface $entity)
+    private function validateHasId(EntityInterface $entity): void
     {
         if (null === $entity->getId()) {
             throw new \UnexpectedValueException('The entity must have an ID.');
@@ -257,37 +250,18 @@ class EntityManager
     }
 
     /**
-     * Creates a new entity manager for the given Webling account.
-     *
-     * @param string $subdomain Your Webling subdomain.
-     * @param string $apiKey    Your Webling API key.
-     *
-     * @return static
-     */
-    public static function createForAccount($subdomain, $apiKey)
-    {
-        return new static(new Client($subdomain, $apiKey, static::API_VERSION), new EntityFactory());
-    }
-
-    /**
      * Validates an order config and converts to query string.
      *
-     * @param array $order
-     *
-     * @return string
-     *
-     * @throws \InvalidArgumentException If the order contains invalid sorting directions.
+     * @throws \InvalidArgumentException if the order contains invalid sorting directions
      */
-    private function prepareOrder(array $order)
+    private function prepareOrder(array $order): string
     {
         $props = [];
         $directions = [RepositoryInterface::DIRECTION_ASC, RepositoryInterface::DIRECTION_DESC];
 
         foreach ($order as $property => $direction) {
-            if (!in_array($direction, $directions, true)) {
-                throw new \InvalidArgumentException(
-                    sprintf('Invalid sorting direction "%s" for property "%s"', $property, $direction)
-                );
+            if (!\in_array($direction, $directions, true)) {
+                throw new \InvalidArgumentException(sprintf('Invalid sorting direction "%s" for property "%s"', $property, $direction));
             }
 
             $props[] = sprintf('`%s` %s', $property, $direction);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Terminal42\WeblingApi\Test\Query;
 
 use PHPUnit\Framework\TestCase;
@@ -12,14 +14,14 @@ class QueryBuilderTest extends TestCase
      */
     private $queryBuilder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->queryBuilder = new QueryBuilder();
     }
 
     public function testInstantiation(): void
     {
-        static::assertInstanceOf(QueryBuilder::class, $this->queryBuilder);
+        $this->assertInstanceOf(QueryBuilder::class, $this->queryBuilder);
     }
 
     public function testSimpleCondition(): void
@@ -30,7 +32,7 @@ class QueryBuilderTest extends TestCase
             ->build()
         ;
 
-        static::assertEquals('foo = "bar"', $result);
+        $this->assertSame('foo = "bar"', $result);
     }
 
     public function testMultipleConditions(): void
@@ -43,7 +45,7 @@ class QueryBuilderTest extends TestCase
             ->build()
         ;
 
-        static::assertEquals('foo = "bar" AND bar != "foo"', $result);
+        $this->assertSame('foo = "bar" AND bar != "foo"', $result);
     }
 
     public function testSimpleGroup(): void
@@ -52,7 +54,7 @@ class QueryBuilderTest extends TestCase
             $this->queryBuilder->where('foo')->isEqualTo('bar')
         )->build();
 
-        static::assertEquals('(foo = "bar")', $result);
+        $this->assertSame('(foo = "bar")', $result);
     }
 
     public function testComplexGroup(): void
@@ -69,6 +71,6 @@ class QueryBuilderTest extends TestCase
             )->build()
         ;
 
-        static::assertEquals('(foo = "bar" AND bar != "foo") OR (bar = "foo" AND foo != "bar")', $result);
+        $this->assertSame('(foo = "bar" AND bar != "foo") OR (bar = "foo" AND foo != "bar")', $result);
     }
 }
