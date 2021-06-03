@@ -2,16 +2,19 @@
 
 namespace Terminal42\WeblingApi\Test;
 
+use PHPUnit\Framework\TestCase;
 use Terminal42\WeblingApi\Changes;
+use Terminal42\WeblingApi\EntityList;
+use Terminal42\WeblingApi\EntityManager;
 
-class ChangesTest extends \PHPUnit_Framework_TestCase
+class ChangesTest extends TestCase
 {
     /**
      * @var Changes
      */
     private $changes;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->changes = new Changes(
             1,
@@ -37,25 +40,25 @@ class ChangesTest extends \PHPUnit_Framework_TestCase
                 'revision'     => 1530,
                 'version'      => 720,
             ],
-            $this->getMock('Terminal42\\WeblingApi\\EntityManager', [], [], '', false)
+            $this->createMock(EntityManager::class)
         );
     }
 
-    public function testGetAllEntities()
+    public function testGetAllEntities(): void
     {
         $entities = $this->changes->getAllEntities();
 
         foreach (['member', 'membergroup', 'debitor'] as $type) {
             $this->assertArrayHasKey($type, $entities);
-            $this->assertInstanceOf('Terminal42\WeblingApi\EntityList', $entities[$type]);
+            $this->assertInstanceOf(EntityList::class, $entities[$type]);
         }
     }
 
-    public function testGetEntities()
+    public function testGetEntities(): void
     {
         $entities = $this->changes->getEntities('member');
 
-        $this->assertInstanceOf('Terminal42\WeblingApi\EntityList', $entities);
+        $this->assertInstanceOf(EntityList::class, $entities);
         $this->assertEquals([469,492], $entities->getIds());
     }
 }

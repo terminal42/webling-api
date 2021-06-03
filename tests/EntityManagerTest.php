@@ -2,15 +2,18 @@
 
 namespace Terminal42\WeblingApi\Test;
 
+use PHPUnit\Framework\TestCase;
+use Terminal42\WeblingApi\ClientInterface;
 use Terminal42\WeblingApi\Entity\Member;
 use Terminal42\WeblingApi\EntityFactory;
+use Terminal42\WeblingApi\EntityFactoryInterface;
 use Terminal42\WeblingApi\EntityManager;
 
-class EntityManagerTest extends \PHPUnit_Framework_TestCase
+class EntityManagerTest extends TestCase
 {
-    public function testFindAllMembers()
+    public function testFindAllMembers(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $manager = new EntityManager($client, new EntityFactory());
 
         $client
@@ -26,10 +29,10 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([1, 2, 3], $members->getIds());
     }
 
-    public function testFindMember()
+    public function testFindMember(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
-        $factory = $this->getMock('Terminal42\WeblingApi\EntityFactoryInterface');
+        $client  = $this->createMock(ClientInterface::class);
+        $factory = $this->createMock(EntityFactoryInterface::class);
         $manager = new EntityManager($client, $factory);
 
         $client
@@ -52,9 +55,9 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $manager->find('member', 111);
     }
 
-    public function testPersistWithId()
+    public function testPersistWithId(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member(111);
         $manager = new EntityManager($client, new EntityFactory());
 
@@ -67,9 +70,9 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $manager->persist($entity);
     }
 
-    public function testPersistWithoutId()
+    public function testPersistWithoutId(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member();
         $manager = new EntityManager($client, new EntityFactory());
 
@@ -84,21 +87,20 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(111, $entity->getId());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testPersistReadonly()
+    public function testPersistReadonly(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $this->expectException(\InvalidArgumentException::class);
+
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member(111, true);
         $manager = new EntityManager($client, new EntityFactory());
 
         $manager->persist($entity);
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member(111);
         $manager = new EntityManager($client, new EntityFactory());
 
@@ -113,33 +115,31 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $entity->getId());
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
-    public function testRemoveWithoutId()
+    public function testRemoveWithoutId(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $this->expectException(\UnexpectedValueException::class);
+
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member();
         $manager = new EntityManager($client, new EntityFactory());
 
         $manager->remove($entity);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testRemoveReadonly()
+    public function testRemoveReadonly(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $this->expectException(\InvalidArgumentException::class);
+
+        $client  = $this->createMock(ClientInterface::class);
         $entity  = new Member(111, true);
         $manager = new EntityManager($client, new EntityFactory());
 
         $manager->remove($entity);
     }
 
-    public function testGetLatestRevisionId()
+    public function testGetLatestRevisionId(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $manager = new EntityManager($client, new EntityFactory());
 
         $client
@@ -157,9 +157,9 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1234, $manager->getLatestRevisionId());
     }
 
-    public function testGetChanges()
+    public function testGetChanges(): void
     {
-        $client  = $this->getMock('Terminal42\\WeblingApi\\ClientInterface');
+        $client  = $this->createMock(ClientInterface::class);
         $manager = new EntityManager($client, new EntityFactory());
 
         $client

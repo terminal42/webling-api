@@ -2,13 +2,14 @@
 
 namespace Terminal42\WeblingApi\Test\Query;
 
+use PHPUnit\Framework\TestCase;
 use Terminal42\WeblingApi\Query\Parameter;
 use Terminal42\WeblingApi\Query\Query;
 
-class ParameterTest extends \PHPUnit_Framework_TestCase
+class ParameterTest extends TestCase
 {
 
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $parameter = new Parameter('foo');
 
@@ -16,7 +17,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         static::assertInstanceOf('\Terminal42\WeblingApi\Query\BuildableInterface', $parameter);
     }
 
-    public function testReturnsParent()
+    public function testReturnsParent(): void
     {
         $parameter = new Parameter('foo');
         $this->assertNull($parameter->getParent());
@@ -28,7 +29,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider valueOperatorsProvider
      */
-    public function testValueOperators($method, $operator)
+    public function testValueOperators($method, $operator): void
     {
         $parameter = new Parameter('foo');
 
@@ -37,7 +38,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(sprintf('foo %s "bar"', $operator), $parameter->build());
     }
 
-    public function testSpecialOperators()
+    public function testSpecialOperators(): void
     {
         $parameter = new Parameter('foo');
         $parameter->isEmpty();
@@ -60,7 +61,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('NOT (foo LIKE "bar")', $parameter->build());
     }
 
-    public function testEscapesPropertyIfNecessary()
+    public function testEscapesPropertyIfNecessary(): void
     {
         $parameter = new Parameter('foo bar');
         $parameter->isEmpty();
@@ -68,7 +69,7 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('`foo bar` IS EMPTY', $parameter->build());
     }
 
-    public function testCanSearchForProperty()
+    public function testCanSearchForProperty(): void
     {
         $p1 = new Parameter('foo');
         $p2 = new Parameter('bar baz');
@@ -78,24 +79,24 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo = `bar baz`', $p1->build());
     }
 
-    public function testBuildThrowsExceptionWhenQueryIsNotSet()
+    public function testBuildThrowsExceptionWhenQueryIsNotSet(): void
     {
-        $this->setExpectedException('RuntimeException');
+        $this->expectException(\RuntimeException::class);
 
         $parameter = new Parameter('foo');
         $parameter->build();
     }
 
-    public function testThrowsExceptionIfQueryConditionIsSetTwice()
+    public function testThrowsExceptionIfQueryConditionIsSetTwice(): void
     {
-        $this->setExpectedException('RuntimeException');
+        $this->expectException(\RuntimeException::class);
 
         $parameter = new Parameter('foo');
         $parameter->isEqualTo('bar');
         $parameter->isEmpty();
     }
 
-    public function valueOperatorsProvider()
+    public function valueOperatorsProvider(): array
     {
         return [
             ['isLessThan', '<'],

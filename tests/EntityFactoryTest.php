@@ -2,11 +2,12 @@
 
 namespace Terminal42\WeblingApi\Test;
 
+use PHPUnit\Framework\TestCase;
 use Terminal42\WeblingApi\EntityFactory;
 
-class EntityFactoryTest extends \PHPUnit_Framework_TestCase
+class EntityFactoryTest extends TestCase
 {
-    public function testSupports()
+    public function testSupports(): void
     {
         $factory = new EntityFactory();
 

@@ -2,22 +2,23 @@
 
 namespace Terminal42\WeblingApi\Test;
 
+use PHPUnit\Framework\TestCase;
 use Terminal42\WeblingApi\EntityList;
+use Terminal42\WeblingApi\EntityManager;
 
-class EntityListTest extends \PHPUnit_Framework_TestCase
+class EntityListTest extends TestCase
 {
-
-    public function testGetIds()
+    public function testGetIds(): void
     {
-        $manager = $this->getMock('Terminal42\\WeblingApi\\EntityManager', [], [], '', false);
+        $manager = $this->createMock(EntityManager::class);
         $list    = new EntityList('member', [1,2,3], $manager);
 
         $this->assertEquals([1,2,3], $list->getIds());
     }
 
-    public function testFindInManager()
+    public function testFindInManager(): void
     {
-        $manager = $this->getMock('Terminal42\\WeblingApi\\EntityManager', ['find'], [], '', false);
+        $manager = $this->createMock(EntityManager::class);
         $list    = new EntityList('member', [111], $manager);
 
         $manager

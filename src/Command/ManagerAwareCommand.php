@@ -23,12 +23,14 @@ abstract class ManagerAwareCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
+        if (null === $this->manager) {
+            /** @var QuestionHelper $helper */
+            $helper = $this->getHelper('question');
 
-        $subdomain = $helper->ask($input, $output, new Question('Please enter your Webling subdomain: '));
-        $apiKey    = $helper->ask($input, $output, new Question('Please enter your Webling API key: '));
+            $subdomain = $helper->ask($input, $output, new Question('Please enter your Webling subdomain: '));
+            $apiKey = $helper->ask($input, $output, new Question('Please enter your Webling API key: '));
 
-        $this->manager = new EntityManager(new Client($subdomain, $apiKey, EntityManager::API_VERSION), new EntityFactory());
+            $this->manager = new EntityManager(new Client($subdomain, $apiKey, EntityManager::API_VERSION), new EntityFactory());
+        }
     }
 }
