@@ -12,6 +12,11 @@ class Parameter implements BuildableInterface
     private $property;
 
     /**
+     * @var bool
+     */
+    private $not = false;
+
+    /**
      * @var string
      */
     private $query;
@@ -30,6 +35,16 @@ class Parameter implements BuildableInterface
     public function __toString(): string
     {
         return $this->query;
+    }
+
+    /**
+     * Inverses the query to find what does NOT match
+     */
+    public function not(): self
+    {
+        $this->not = true;
+
+        return $this;
     }
 
     /**
@@ -117,36 +132,6 @@ class Parameter implements BuildableInterface
     }
 
     /**
-     * Queries if property is *equals* to given value.
-     * Placeholders * (many characters) and ? (one character) are allowed.
-     *
-     * @param string $value
-     *
-     * @throws \RuntimeException if a query condition has already been configured on this parameter
-     */
-    public function like($value): ?Query
-    {
-        $this->setQuery('%s LIKE %s', $value);
-
-        return $this->parent;
-    }
-
-    /**
-     * Queries if property is *not equals* to given value.
-     * Placeholders * (many characters) and ? (one character) are allowed.
-     *
-     * @param string|Parameter $value
-     *
-     * @throws \RuntimeException if a query condition has already been configured on this parameter
-     */
-    public function notLike($value): ?Query
-    {
-        $this->setQuery('NOT (%s LIKE %s)', $value);
-
-        return $this->parent;
-    }
-
-    /**
      * Queries if property is *empty*.
      *
      * @throws \RuntimeException if a query condition has already been configured on this parameter
@@ -154,18 +139,6 @@ class Parameter implements BuildableInterface
     public function isEmpty(): ?Query
     {
         $this->setQuery('%s IS EMPTY', null);
-
-        return $this->parent;
-    }
-
-    /**
-     * Queries if property is *not empty*.
-     *
-     * @throws \RuntimeException if a query condition has already been configured on this parameter
-     */
-    public function isNotEmpty(): ?Query
-    {
-        $this->setQuery('NOT (%s IS EMPTY)', null);
 
         return $this->parent;
     }
@@ -185,15 +158,15 @@ class Parameter implements BuildableInterface
     }
 
     /**
-     * Queries if property value is *not one of given options*.
+     * Queries if property *starts with* given value.
      *
-     * @param array<string> $values
+     * @param string $value
      *
      * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function notIn(array $values): ?Query
+    public function filter($value): ?Query
     {
-        $this->setQuery('NOT (%s IN (%s))', $values);
+        $this->setQuery('%s FILTER %s', $value);
 
         return $this->parent;
     }
@@ -205,9 +178,9 @@ class Parameter implements BuildableInterface
      *
      * @throws \RuntimeException if a query condition has already been configured on this parameter
      */
-    public function filter($value): ?Query
+    public function contains($value): ?Query
     {
-        $this->setQuery('%s FILTER %s', $value);
+        $this->setQuery('%s CONTAINS %s', $value);
 
         return $this->parent;
     }
@@ -268,6 +241,10 @@ class Parameter implements BuildableInterface
             $this->escapeProperty($this->property),
             $this->escapeValue($value)
         );
+
+        if  ($this->not) {
+            $this->query = 'NOT ('.$this->query.')';
+        }
     }
 
     /**
