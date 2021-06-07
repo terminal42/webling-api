@@ -38,7 +38,7 @@ abstract class AbstractEntity implements EntityInterface
      */
     protected $links;
 
-    public function __construct(int $id = null, bool $readonly = false, array $properties = [], array $children = [], EntityList $parents = null, EntityList $links = null)
+    public function __construct(int $id = null, bool $readonly = false, array $properties = [], array $children = [], EntityList $parents = null, array $links = [])
     {
         $this->id = $id;
         $this->readonly = (bool) $readonly;
@@ -98,11 +98,7 @@ abstract class AbstractEntity implements EntityInterface
 
     public function getChildren(string $type): ?EntityList
     {
-        if (!isset($this->children[$type])) {
-            return null;
-        }
-
-        return $this->children[$type];
+        return $this->children[$type] ?? null;
     }
 
     public function getParents(): ?EntityList
@@ -117,26 +113,20 @@ abstract class AbstractEntity implements EntityInterface
         return $this;
     }
 
-    public function getLinks(): ?EntityList
+    public function getLinks(string $type): ?EntityList
     {
-        return $this->links;
-    }
-
-    public function setLinks(EntityList $links): EntityInterface
-    {
-        $this->links = $links;
-
-        return $this;
+        return $this->links[$type] ?? null;
     }
 
     public function jsonSerialize()
     {
         $data = [
             'type' => $this->getType(),
-            'readonly' => (int) $this->isReadonly(),
-            'properties' => $this->getProperties(),
-            'parents' => $this->getParents() ? $this->getParents()->getIds() : [],
-            'links' => $this->getLinks() ? $this->getLinks()->getIds() : [],
+            'readonly' => (int) $this->readonly,
+            'properties' => $this->properties,
+            'children' => $this->children,
+            'parents' => $this->parents,
+            'links' => $this->links,
         ];
 
         return json_encode($data);

@@ -6,7 +6,7 @@ namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\EntityInterface;
 
-class EntityList implements \Iterator, \Countable
+class EntityList implements \Iterator, \Countable, \JsonSerializable
 {
     /**
      * @var string
@@ -30,7 +30,7 @@ class EntityList implements \Iterator, \Countable
      * @param array         $ids     An array of entity IDs
      * @param EntityManager $manager An entity manager to fetch entities
      */
-    public function __construct($type, array $ids, EntityManager $manager)
+    public function __construct(string $type, array $ids, EntityManager $manager)
     {
         $this->type = $type;
         $this->ids = $ids;
@@ -95,5 +95,10 @@ class EntityList implements \Iterator, \Countable
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->ids;
     }
 }
