@@ -11,7 +11,12 @@ interface EntityInterface extends \JsonSerializable
     /**
      * Gets the entity type.
      */
-    public function getType(): string;
+    public static function getType(): string;
+
+    /**
+     * Gets the parent entity type.
+     */
+    public static function getParentType(): ?string;
 
     /**
      * Return whether the entity is read-only.
@@ -75,10 +80,5 @@ interface EntityInterface extends \JsonSerializable
     /**
      * Gets the linked entities.
      */
-    public function getLinks(): ?EntityList;
-
-    /**
-     * Sets the linked entities.
-     */
-    public function setLinks(EntityList $links): self;
+    public function getLinks(string $type): ?EntityList;
 }

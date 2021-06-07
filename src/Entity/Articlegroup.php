@@ -6,8 +6,13 @@ namespace Terminal42\WeblingApi\Entity;
 
 class Articlegroup extends AbstractEntity
 {
-    public function getType(): string
+    public static function getType(): string
     {
         return 'articlegroup';
+    }
+
+    public static function getParentType(): ?string
+    {
+        return null;
     }
 }

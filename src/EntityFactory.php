@@ -26,10 +26,15 @@ class EntityFactory implements EntityFactoryInterface
         $class = static::$classes[$data['type']];
 
         $children = [];
+        $parents = null;
         $links = [];
 
         foreach ((array) $data['children'] as $type => $ids) {
             $children[$type] = new EntityList($type, $ids, $manager);
+        }
+
+        if (null !== $class::getParentType()) {
+            $parents = new EntityList($class::getParentType(), $data['parents'], $manager);
         }
 
         foreach ((array) $data['links'] as $type => $ids) {
@@ -41,7 +46,7 @@ class EntityFactory implements EntityFactoryInterface
             $data['readonly'],
             $data['properties'],
             $children,
-            new EntityList($data['type'], $data['parents'], $manager),
+            $parents,
             $links
         );
 

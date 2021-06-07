@@ -10,9 +10,14 @@ class Member extends AbstractEntity
     public const IMAGE_THUMB = 'thumb';
     public const IMAGE_MINI = 'mini';
 
-    public function getType(): string
+    public static function getType(): string
     {
         return 'member';
+    }
+
+    public static function getParentType(): string
+    {
+        return 'membergroup';
     }
 
     /**

@@ -6,7 +6,12 @@ namespace Terminal42\WeblingApi\Entity;
 
 class Membergroup extends AbstractEntity
 {
-    public function getType(): string
+    public static function getType(): string
+    {
+        return 'membergroup';
+    }
+
+    public static function getParentType(): string
     {
         return 'membergroup';
     }

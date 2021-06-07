@@ -6,7 +6,12 @@ namespace Terminal42\WeblingApi\Entity;
 
 class Documentgroup extends AbstractEntity
 {
-    public function getType(): string
+    public static function getType(): string
+    {
+        return 'documentgroup';
+    }
+
+    public static function getParentType(): string
     {
         return 'documentgroup';
     }
