@@ -68,7 +68,7 @@ class Client implements ClientInterface
         }
     }
 
-    public function post(string $url, string $json): void
+    public function post(string $url, string $json)
     {
         try {
             $response = $this->httpClient->sendRequest(
@@ -78,6 +78,8 @@ class Client implements ClientInterface
             if (201 !== $response->getStatusCode()) {
                 throw $this->convertResponseToException($response);
             }
+
+            return $response->getBody()->getContents();
         } catch (\Exception $e) {
             throw new HttpStatusException($e->getMessage(), $e->getCode(), $e);
         }

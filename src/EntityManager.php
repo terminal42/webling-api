@@ -218,7 +218,7 @@ class EntityManager
 
         $result = $this->client->post("/$type", $data);
 
-        $entity->setId($result);
+        $entity->setId((int) $result);
     }
 
     /**
