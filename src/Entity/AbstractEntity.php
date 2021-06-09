@@ -34,7 +34,7 @@ abstract class AbstractEntity implements EntityInterface
     protected $parents;
 
     /**
-     * @var EntityList|null
+     * @var array
      */
     protected $links;
 
@@ -122,7 +122,7 @@ abstract class AbstractEntity implements EntityInterface
     {
         $data = [
             'type' => $this->getType(),
-            'readonly' => (int) $this->readonly,
+            'readonly' => $this->readonly,
             'properties' => $this->properties,
             // do not add "children" here since they are readonly in the API
             'parents' => $this->parents,
