@@ -124,11 +124,11 @@ abstract class AbstractEntity implements EntityInterface
             'type' => $this->getType(),
             'readonly' => (int) $this->readonly,
             'properties' => $this->properties,
-            'children' => $this->children,
+            // do not add "children" here since they are readonly in the API
             'parents' => $this->parents,
             'links' => $this->links,
         ];
 
-        return json_encode($data);
+        return $data;
     }
 }
