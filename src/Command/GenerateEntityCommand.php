@@ -7,6 +7,7 @@ namespace Terminal42\WeblingApi\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,6 +33,8 @@ class GenerateEntityCommand extends ManagerAwareCommand
             ->setName('generate')
             ->setDescription('Generate entities for your Webling configuration.')
             ->addArgument('directory', InputArgument::REQUIRED, 'The directory to place generated files.')
+            ->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'The namespace for generated entities.')
+            ->addOption('strict-types', null, InputOption::VALUE_NONE, 'Whether to enforce strict types on the entities.')
         ;
     }
 
@@ -56,7 +59,7 @@ class GenerateEntityCommand extends ManagerAwareCommand
             $class = ucfirst($entity);
             $classes[$entity] = $namespace.'\\Entity\\'.$class;
 
-            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definition[$entity]['properties']);
+            $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definition[$entity]['properties'], $input->getOption('strict-types'));
         }
 
         $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'));
@@ -66,6 +69,10 @@ class GenerateEntityCommand extends ManagerAwareCommand
 
     private function getNamespace(InputInterface $input, OutputInterface $output): string
     {
+        if ($namespace = $input->getOption('namespace')) {
+            return $namespace;
+        }
+
         /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
 
@@ -124,11 +131,12 @@ PHP;
         $this->filesystem->dumpFile($path.\DIRECTORY_SEPARATOR.'EntityFactory.php', $buffer);
     }
 
-    private function generateEntity($namespace, $className, $path, array $properties): void
+    private function generateEntity($namespace, $className, $path, array $properties, bool $strictTypes = false): void
     {
+        $declare = $strictTypes ? "\ndeclare(strict_types=1);\n" : '';
         $buffer = <<<PHP
 <?php
-
+$declare
 namespace $namespace\\Entity;
 
 use Terminal42\\WeblingApi\\Entity\\DefinitionAwareInterface;
@@ -144,37 +152,33 @@ PHP;
         foreach ($properties as $name => $property) {
             $id = $property['id'];
             $method = $this->normalizeProperty($name);
-            $hint = $this->getTypehint($property['datatype'], $name, $namespace);
+            $type = $this->getType($property['datatype'], $name, $namespace);
 
-            $isScalar = \in_array($hint, ['int', 'float', 'bool', 'string'], true);
-            $type = $isScalar ? '' : $hint.' ';
+            $isScalar = \in_array($type, ['int', 'float', 'bool', 'string'], true);
             $default = $isScalar ? '' : ' = null';
             $getter = '$this->valueFromProperty($name, $this->getProperty($name))';
+
+            $typehint = $isScalar && !$strictTypes ? '' : $type.' ';
+            $return = $strictTypes ? ': ?'.$type : '';
+            $getDocs = $strictTypes ? '' : "\n    /**\n     * @return $type\n     */";
+            $setDocs = $strictTypes ? '' : "\n    /**\n     * @param $type \$value\n     */";
 
             if ('enum' === $property['datatype'] || 'multienum' === $property['datatype']) {
                 $this->generateEnum($namespace, $method, $path, $property, 'multienum' === $property['datatype']);
                 $default = '';
-                $getter = 'new '.$hint.'($this->getProperty($name))';
+                $getter = 'new '.$type.'($this->getProperty($name))';
             }
 
             $buffer .= <<<PHP
-
-    /**
-     * @return $hint
-     */
-    public function get$method()
+$getDocs
+    public function get$method()$return
     {
         \$name = \$this->getPropertyNameById($id);
 
         return $getter;
     }
-
-    /**
-     * @param $hint \$value
-     *
-     * @return \$this
-     */
-    public function set$method($type\$value$default)
+$setDocs
+    public function set$method($typehint\$value$default): self
     {
         \$name = \$this->getPropertyNameById($id);
         \$this->setProperty(\$name, \$value);
@@ -247,7 +251,7 @@ PHP;
         return strtoupper($value);
     }
 
-    private function getTypehint($datatype, $name, $namespace)
+    private function getType($datatype, $name, $namespace)
     {
         switch ($datatype) {
             case 'autoincrement':
