@@ -23,7 +23,18 @@ trait GeneratorTrait
 
     protected function valueFromProperty($name, $value)
     {
-        $property = $this->definition['properties'][$name];
+        $property = null;
+        foreach ((array) $this->definition['properties'] as $data) {
+            if ($name === $data['title']) {
+                $property = $data;
+                break;
+            }
+        }
+
+        if (null === $property) {
+            throw new \UnderflowException(sprintf('Webling Error: Property with title "%s" does not exist in the %s definition.', $name, __CLASS__));
+        }
+
         $datatype = $property['datatype'];
 
         switch ($datatype) {
@@ -67,12 +78,12 @@ trait GeneratorTrait
 
     protected function getPropertyNameById($id)
     {
-        foreach ((array) $this->definition['properties'] as $name => $data) {
+        foreach ((array) $this->definition['properties'] as $data) {
             if ($id === $data['id']) {
-                return $name;
+                return $data['title'];
             }
         }
 
-        throw new \UnderflowException(sprintf('ID %s was not found.', $id));
+        throw new \UnderflowException(sprintf('Webling Error: Property with ID %s does not exist in the %s definition.', $id, __CLASS__));
     }
 }

@@ -150,8 +150,9 @@ class $className extends BaseEntity implements DefinitionAwareInterface
 
 PHP;
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             $id = $property['id'];
+            $name = $property['title'];
             $method = $this->normalizeProperty($name);
             $type = $this->getType($property['datatype'], $name, $namespace);
 
@@ -215,6 +216,7 @@ class $className extends $parent
 PHP;
 
         foreach ((array) $property['values'] as $value) {
+            $value = $value['value'];
             $name = $this->normalizeConstant($className, $value);
 
             $buffer .= <<<PHP

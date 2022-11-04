@@ -62,7 +62,7 @@ class EntityManager
     public function getDefinition()
     {
         if (null === $this->definition) {
-            $this->definition = $this->client->get('/definition');
+            $this->definition = $this->client->get('/definition', ['format' => 'full']);
         }
 
         return $this->definition;
