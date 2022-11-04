@@ -62,7 +62,7 @@ class GenerateEntityCommand extends ManagerAwareCommand
             $this->generateEntity($namespace, $class, $input->getArgument('directory'), $definition[$entity]['properties'], $input->getOption('strict-types'));
         }
 
-        $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'));
+        $this->generateEntityFactory($namespace, $classes, $input->getArgument('directory'), $input->getOption('strict-types'));
 
         return 0;
     }
@@ -109,13 +109,14 @@ class GenerateEntityCommand extends ManagerAwareCommand
         return $entities;
     }
 
-    private function generateEntityFactory($namespace, array $classes, $path): void
+    private function generateEntityFactory($namespace, array $classes, $path, bool $strictTypes = false): void
     {
+        $declare = $strictTypes ? "\ndeclare(strict_types=1);\n" : '';
         $var = var_export($classes, true);
 
         $buffer = <<<PHP
 <?php
-
+$declare
 namespace $namespace;
 
 use Terminal42\\WeblingApi\\EntityFactory as BaseFactory;
@@ -164,7 +165,7 @@ PHP;
             $setDocs = $strictTypes ? '' : "\n    /**\n     * @param $type \$value\n     */";
 
             if ('enum' === $property['datatype'] || 'multienum' === $property['datatype']) {
-                $this->generateEnum($namespace, $method, $path, $property, 'multienum' === $property['datatype']);
+                $this->generateEnum($namespace, $method, $path, $property, 'multienum' === $property['datatype'], $strictTypes);
                 $default = '';
                 $getter = 'new '.$type.'($this->getProperty($name))';
             }
@@ -197,12 +198,13 @@ PHP;
         );
     }
 
-    private function generateEnum($namespace, $className, $path, array $property, $multi = false): void
+    private function generateEnum($namespace, $className, $path, array $property, bool $multi = false, bool $strictTypes = false): void
     {
+        $declare = $strictTypes ? "\ndeclare(strict_types=1);\n" : '';
         $parent = $multi ? 'Multienum' : 'Enum';
         $buffer = <<<PHP
 <?php
-
+$declare
 namespace $namespace\\Property;
 
 use Terminal42\\WeblingApi\\Property\\$parent;
