@@ -248,7 +248,9 @@ PHP;
         $value = preg_replace('/[^a-z0-9]/i', '_', $value);
         $value = trim(str_replace('__', '_', $value), '_');
 
-        if (is_numeric($value)) {
+        if (empty($value)) {
+            $value = '_';
+        } elseif (is_numeric($value)) {
             $value = $property.'_'.$value;
         }
 
