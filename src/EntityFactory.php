@@ -6,19 +6,25 @@ namespace Terminal42\WeblingApi;
 
 use Terminal42\WeblingApi\Entity\DefinitionAwareInterface;
 use Terminal42\WeblingApi\Entity\EntityInterface;
+use Terminal42\WeblingApi\Entity\Member;
+use Terminal42\WeblingApi\Entity\Membergroup;
+use Terminal42\WeblingApi\Entity\Article;
+use Terminal42\WeblingApi\Entity\Articlegroup;
+use Terminal42\WeblingApi\Entity\Document;
+use Terminal42\WeblingApi\Entity\Documentgroup;
 
 class EntityFactory implements EntityFactoryInterface
 {
     /**
-     * @var EntityInterface[]
+     * @var array<string, string>
      */
     protected static $classes = [
-        'member' => 'Terminal42\\WeblingApi\\Entity\\Member',
-        'membergroup' => 'Terminal42\\WeblingApi\\Entity\\Membergroup',
-        'article' => 'Terminal42\\WeblingApi\\Entity\\Article',
-        'articlegroup' => 'Terminal42\\WeblingApi\\Entity\\Articlegroup',
-        'document' => 'Terminal42\\WeblingApi\\Entity\\Document',
-        'documentgroup' => 'Terminal42\\WeblingApi\\Entity\\Documentgroup',
+        'member' => Member::class,
+        'membergroup' => Membergroup::class,
+        'article' => Article::class,
+        'articlegroup' => Articlegroup::class,
+        'document' => Document::class,
+        'documentgroup' => Documentgroup::class,
     ];
 
     public function create(EntityManager $manager, array $data, int $id = null): EntityInterface
