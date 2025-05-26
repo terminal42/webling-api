@@ -148,6 +148,35 @@ class EntityManager
     }
 
     /**
+     * @param list<int> $ids
+     * @return array<EntityInterface>
+     */
+    public function findMultiple(string $type, array $ids): array
+    {
+        $idsToFetch = array_diff($ids, array_keys($this->entities[$type] ?? []));
+        $records = $this->client->get("/$type/".implode(',', $idsToFetch));
+
+        foreach ($records as $data) {
+            $id = $data['id'];
+            $entity = $this->factory->create($this, $data, $id);
+
+            $this->entities[$type][$id] = $entity;
+        }
+
+        $result = [];
+
+        foreach ($ids as $id) {
+            if (!isset($this->entities[$type][$id])) {
+                continue;
+            }
+
+            $result[$id] = $this->entities[$type][$id];
+        }
+
+        return $result;
+    }
+
+    /**
      * Add or update the entity in Webling.
      *
      * @throws \InvalidArgumentException If the entity is readonly

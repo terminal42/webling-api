@@ -42,6 +42,15 @@ abstract class AbstractRepository implements RepositoryInterface
      * @throws HttpStatusException If there was a problem with the request
      * @throws ParseException      If the JSON data could not be parsed
      */
+    public function findMultipleByIds(array $ids): array
+    {
+        return $this->manager->findMultiple($this->getType(), $ids);
+    }
+
+    /**
+     * @throws HttpStatusException If there was a problem with the request
+     * @throws ParseException      If the JSON data could not be parsed
+     */
     public function findBy(Query $query, array $order = []): EntityList
     {
         return $this->manager->findAll($this->getType(), $query, $order);
