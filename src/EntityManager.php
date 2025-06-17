@@ -154,13 +154,17 @@ class EntityManager
     public function findMultiple(string $type, array $ids): array
     {
         $idsToFetch = array_diff($ids, array_keys($this->entities[$type] ?? []));
-        $records = $this->client->get("/$type/".implode(',', $idsToFetch));
+        $totalToFetch = \count($idsToFetch);
 
-        foreach ($records as $data) {
-            $id = $data['id'];
-            $entity = $this->factory->create($this, $data, $id);
+        if (1 === $totalToFetch) {
+            $this->find($type, reset($idsToFetch));
+        } elseif ($totalToFetch > 1) {
+            foreach ($this->client->get("/$type/".implode(',', $idsToFetch)) as $data) {
+                $id = $data['id'];
+                $entity = $this->factory->create($this, $data, $id);
 
-            $this->entities[$type][$id] = $entity;
+                $this->entities[$type][$id] = $entity;
+            }
         }
 
         $result = [];
